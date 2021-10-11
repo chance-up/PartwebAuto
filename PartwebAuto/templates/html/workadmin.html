@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.87.0">
+    <title>Laucher Web</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/navbar-static/">
+
+
+    <!-- Bootstrap core CSS -->
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+    </style>
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/navbar-top.css') }}" rel="stylesheet">
+
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/first">Launcher WEB</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/work">주간보고</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/schedule">재택 일정 관리</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/list">단말 정보 관리</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/admin">관리자 페이지</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="card-deck">
+        {% for key,val in data.items() %}
+        <div class="row">
+            <div class="card border-dark mb-3" style="min-width: 30rem; max-width:30rem">
+                <div class="card-header">금주 주간 보고 - {{key}}</div>
+                <div class="card-body text-dark">
+                    <p class="card-text">{{val[0]}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card border-dark mb-3" style="min-width: 30rem; max-width:30rem">
+                <div class="card-header">차주 주간 보고 -{{key}}</div>
+                <div class="card-body text-dark">
+                    <p class="card-text">{{val[1]}}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+</body>
+</html>

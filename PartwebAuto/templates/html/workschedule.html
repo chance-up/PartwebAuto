@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.87.0">
+    <title>Laucher Web</title>
+
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/navbar-static/">
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+        
+        .abc {
+            caption-side: top;
+        }
+        
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='css/navbar-top.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+
+</head>
+
+<body>
+    {%with messages = get_flashed_messages()%} {%if messages %}
+    <script type="text/javascript">
+        alert("{{messages[-1]}}");
+    </script>
+    {%endif%} {%endwith%}
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/first">Launcher WEB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/work">주간보고</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/schedule">재택 일정 관리</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/list">단말 정보 관리</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">관리자 페이지</a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="row">
+        <div class="col col-md-12" align="center" style="max-width:30rem">
+            <div class="my-3 p-3 bg-white rounded box-shadow" style="max-width:20rem">
+                <h6 class=" pb-2 mb-0">{{name}} 재택 일정</h6>
+                <div class="media text-muted pt-3">
+                    <p class="media-body pb-3 mb-0 small lh-125 ">
+                        <strong class="d-block text-gray-dark">월요일</strong>
+
+                        <div class=" custom-checkbox check-inline form-check form-check-inline">
+
+                            <div class="custom-control form-check-inline">
+                                <input type="checkbox" name="day" class="custom-control-input mon" id="monday" onclick='checkOnlyOne(this,"mon")'>
+                                <label class="custom-control-label" for="monday">재택</label>
+                            </div>
+                            <div class="form-check check-inline">
+                                <input type="checkbox" name="day" class="custom-control-input mon" id="mon" onclick='checkOnlyOne(this,"mon")'>
+                                <label class="custom-control-label" for="mon">휴무</label>
+                            </div>
+
+                        </div>
+                    </p>
+
+                </div>
+
+                <div class="media text-muted pt-3">
+                    <p class="media-body pb-3 mb-0 small lh-125 ">
+                        <strong class="d-block text-gray-dark">화요일</strong>
+
+                        <div class=" custom-checkbox check-inline form-check form-check-inline">
+
+                            <div class="custom-control form-check-inline">
+                                <input type="checkbox" name="day" class="custom-control-input tue" id="tuesday" onclick='checkOnlyOne(this,"tue")'>
+                                <label class="custom-control-label" for="tuesday">재택</label>
+                            </div>
+                            <div class="form-check check-inline">
+                                <input type="checkbox" name="day" class="custom-control-input tue" id="tue" onclick='checkOnlyOne(this,"tue")'>
+                                <label class="custom-control-label" for="tue">휴무</label>
+                            </div>
+
+                        </div>
+                    </p>
+
+                </div>
+
+                <div class="media text-muted pt-3">
+                    <p class="media-body pb-3 mb-0 small lh-125 ">
+                        <strong class="d-block text-gray-dark">수요일</strong>
+
+
+                        <div class=" custom-checkbox check-inline form-check form-check-inline">
+
+                            <div class="custom-control form-check-inline">
+                                <input type="checkbox" name="day" class="custom-control-input wed" id="wednesday" onclick='checkOnlyOne(this,"wed")'>
+                                <label class="custom-control-label" for="wednesday">재택</label>
+                            </div>
+
+                            <div class="form-check check-inline">
+                                <input type="checkbox" name="day" class="custom-control-input wed" id="wed" onclick='checkOnlyOne(this,"wed")'>
+                                <label class="custom-control-label" for="wed">휴무</label>
+                            </div>
+
+                        </div>
+                    </p>
+
+                </div>
+
+                <div class="media text-muted pt-3">
+                    <p class="media-body pb-3 mb-0 small lh-125 ">
+                        <strong class="d-block text-gray-dark">목요일</strong>
+                        <div class=" custom-checkbox check-inline form-check form-check-inline">
+
+                            <div class="custom-control form-check-inline">
+                                <input type="checkbox" name="day" class="custom-control-input thu" id="thursday" onclick='checkOnlyOne(this,"thu")'>
+
+                                <label class="custom-control-label" for="thursday">재택</label>
+                            </div>
+
+                            <div class="form-check check-inline">
+                                <input type="checkbox" name="day" class="custom-control-input thu" id="thu" onclick='checkOnlyOne(this,"thu")'>
+                                <label class="custom-control-label" for="thu">휴무</label>
+                            </div>
+                        </div>
+                </div>
+                <div class="media text-muted pt-3">
+                    <p class="media-body pb-3 mb-0 small lh-125 ">
+                        <strong class="d-block text-gray-dark">금요일</strong>
+                        <div class=" custom-checkbox check-inline form-check form-check-inline">
+
+                            <div class="custom-control form-check-inline">
+                                <input type="checkbox" name="day" class="custom-control-input fri" id="friday" onclick='checkOnlyOne(this,"fri")'>
+
+                                <label class="custom-control-label" for="friday">재택</label>
+                            </div>
+
+                            <div class="form-check check-inline">
+                                <input type="checkbox" name="day" class="custom-control-input fri" id="fri" onclick='checkOnlyOne(this,"fri")'>
+                                <label class="custom-control-label" for="fri">휴무</label>
+                            </div>
+                    </p>
+
+                    </div>
+                </div>
+                <middle class="d-block text-right mt-3">
+                    <button class="btn btn-success" onclick='getCheckboxValue()'>제출</button>
+                </middle>
+            </div>
+        </div>
+
+        <div class="col" align="left">
+
+            <table class="table table-hover table-bordered " style="margin:auto; text-align:center; ">
+                <caption class="abc">근무 일정 표</caption>
+                <thead>
+
+                    <tr class="table-success">
+                        <th class="field-head" scope="col">이름</th>
+                        {% for day in days%}
+                        <th class="field-head" scope="col">{{day}}</th>
+                        {% endfor %}
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    {% for i in range(names|length) %}
+
+                    <tr scope="row">
+                        <td>{{names[i]}}</td>
+                        {% for schedule in schedules[i] %}
+                        <td>{{schedule}}</td>
+                        {%endfor%}
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+            {% for i in range(user_name|length) %}
+            <tr scope="row">
+                <td>{{user_name[i]}}</td>
+                {% for realval in schedule[i] %}
+                <td>{{realval}}</td>
+                {%endfor%}
+
+            </tr>
+            {%endfor%}
+            </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function getCheckboxValue() {
+            // 선택된 목록 가져오기
+            const query = 'input[name="day"]:checked';
+            const selectedEls =
+                document.querySelectorAll(query);
+            var checkArr = [];
+            // 선택된 목록에서 value 찾기
+            let result = '';
+            selectedEls.forEach((el) => {
+                result += el.id + ' '
+            });
+            console.log(result)
+            $.ajax({
+                url: "/schedule",
+                type: "PUT",
+                data: result,
+                success: function(result) {
+                    console.log(result)
+                    window.location.reload()
+                }
+            })
+        }
+
+        function checkOnlyOne(element, day) {
+
+            const checkboxes = document.getElementsByClassName(day);
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+            element.checked = true;
+
+        }
+        $('button').click(function() {
+            $('input:checkbox').prop('checked', false);
+        });
+    </script>
+</body>
+
+</html>

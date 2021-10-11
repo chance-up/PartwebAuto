@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.87.0">
+    <title>Laucher Web</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/navbar-static/">
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+        
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='css/navbar-top.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+
+</head>
+
+<body>
+    {%with messages = get_flashed_messages()%} {%if messages %}
+    <script type="text/javascript">
+        alert("{{messages[-1]}}");
+    </script>
+    {%endif%} {%endwith%}
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/first">Launcher WEB</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/work">주간보고</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " aria-current="page" href="/schedule">재택 일정 관리</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/list">단말 정보 관리</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">관리자 페이지</a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+    </nav>
+
+    <div class="container">
+        <table class="table table-hover">
+
+            <thead>
+
+                <tr class="table-success">
+                    {% for k in field%}
+                    <th class="field-head" scope="col">{{k}}</th>
+                    {% endfor %}
+                    </th>
+                    <th scope="col"></th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+                {% for i in range(val|length) %}
+
+                <tr scope="row">
+                    {% for realval in val[i] %}
+                    <td class="real-val">{{realval}}</td>
+                    {%endfor%}
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        수정/삭제
+                    </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item edit-btn" data-target="#exampleModal" data-whatever="@mdo">수정</a>
+                                <!--data-toggle ="modal"-->
+                                <a class="dropdown-item" href="#" onclick="delRow(this,{{val[i]}});">삭제</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+
+        </table>
+        <button type="button" class="btn btn-success" id="add">추가</button>
+    </div>
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">단말 정보 수정</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+
+                    <form action="/list/update" method="post">
+                        {% for idx in range(field|length) %}
+                        <div class="form-group">
+                            <label for="{{field[idx]}}" class="col-form-label">{{field[idx]}}</label>
+                            <input type="text" class="form-control" placeholder={{val[0][idx]}} id="edit-modal-{{field[idx]}}" name="{{field[idx]}}">
+                        </div>
+                        {% endfor %}
+
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">수정</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel">단말 정보 추가</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/list/deviceinsert" method="post">
+
+                        {% for idx in range(field|length) %}
+                        <div class="form-group">
+                            <label for="{{field[idx]}}" class="col-form-label">{{field[idx]}}</label>
+                            <input type="text" class="form-control" placeholder={{val[0][idx]}} name="{{field[idx]}}">
+                        </div>
+                        {% endfor %}
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">등록</button>
+
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $("#add").on("click", addBtn);
+            $(".edit-btn").on("click", edit);
+            $("#addData").on("click", add);
+        });
+
+        function add() {
+
+
+            $.ajax({
+                url: "/deviceinsert",
+                type: "POST",
+                data: $("#addform"),
+                success: function(data) {
+                    alert("등록 되었습니다.")
+                }
+            });
+
+
+        }
+
+        function edit() {
+            let realValues = $(this).parents('tr').find('.real-val');
+            $(".field-head").each(
+                function(key, val) {
+                    $("#edit-modal-" + val.textContent).val(realValues[key].textContent);
+                }
+            );
+            $("#exampleModal").modal();
+        }
+
+        function addBtn() {
+            $("#addModal").modal();
+        }
+
+        function delRow(ths, id) {
+
+            var check_string = "단말 정보를 정말 삭제하시겠어요?"
+            if (!confirm(check_string)) {
+                return false
+            }
+            $(ths).parents("tr").remove();
+            $.ajax({
+                type: "POST",
+                url: "/list/delbtn",
+                data: {
+                    "id": id[0]
+                },
+                success: function(response) {
+                    if (response['result'] == 'success') {
+                        window.location.reload()
+
+                    }
+                }
+
+            })
+        }
+    </script>
+</body>
+
+</html>

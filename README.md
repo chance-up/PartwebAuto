@@ -1,7 +1,11 @@
 # Partweb 자동화 프로젝트
++ flask 서버 시작
+> flask run
+
 
 ## 0. 준비사항
 + Python 설치
++ MongoDB 설치
 
 ## 1. 가상환경설정
 + 특정 위치에 가상환경들이 담길 폴더를 생성
