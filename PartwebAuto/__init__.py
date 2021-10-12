@@ -1,4 +1,5 @@
 
+from .views import adminView, deviceView, firstView, loginView, weeklyWorkView, workAdminView, workScheduleView
 from flask import Flask
 from flask_mongoengine import MongoEngine
 import sys
@@ -10,8 +11,15 @@ db = MongoEngine()
 
 def create_app():
     def setting_blueprint():
-        from .views import loginView
+        from .views import adminView, deviceView, firstView, loginView, weeklyWorkView, workAdminView, workScheduleView, _userView
+        app.register_blueprint(adminView.adminbp)
+        app.register_blueprint(deviceView.devicebp)
+        app.register_blueprint(firstView.firstbp)
         app.register_blueprint(loginView.loginbp)
+        app.register_blueprint(weeklyWorkView.weeklyWorkbp)
+        app.register_blueprint(workAdminView.workAdminbp)
+        app.register_blueprint(workScheduleView.workSchedulebp)
+        app.register_blueprint(_userView.userbp)
 
     def setting_database():
         # 추후 개발환경 따라 나눌 예정
