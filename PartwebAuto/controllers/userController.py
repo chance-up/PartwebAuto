@@ -1,31 +1,54 @@
 import sys
 import os
+import bcrypt
+
 
 from PartwebAuto.models.models import User
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 
-def checkUser(request):
-    userEmail = request.form.get('userid')
-    userName = request.form.get('username')
-    password = request.form.get('password')
-    confirmPassword = request.form.get('confirm_pw')
-    print(len(User.objects(userEmail__exact=userEmail)))
-    print(len(User.objects(userName__exact=userName)))
-    print(password != confirmPassword)
+# 회원가입 - 유저 Email,Name 검증
+def checkUserValid(request):
+    body = request.get_json()
+    user = User(**body)
 
-    # result = User.objects(userEmail__exact=userEmail)
-
-    # return result
-
-    if len(User.objects(userEmail__exact=userEmail)):
+    # step 1 : Validate that a "userEmail" exists
+    if len(User.objects(userEmail__exact=user.userEmail)):
         return -1
 
-    if len(User.objects(userName__exact=userName)):
+    # step 2 : Validate that a "userName" exists
+    if len(User.objects(userName__exact=user.userName)):
         return -2
 
-    if password != confirmPassword:
-        return -3
+    return 0
+
+
+# 회원가입 - 유저 삽입
+def insertUser(request):
+    body = request.get_json()
+    user = User(**body)
+    hashPassword = bcrypt.hashpw(
+        user.password.encode('utf-8'), bcrypt.gensalt())
+    user.password = hashPassword
+    user.save()
+    return user
+
+
+# 로그인 - 유저 검증
+def checkUser(request):
+    body = request.get_json()
+    loginUser = User(**body)
+
+    dbUser = User.objects(userEmail__exact=loginUser.userEmail)
+    # step 1 : Validate that a "userEmail" not exists
+    if not len(dbUser):
+        return -1
+
+    # step 2 : Validate password
+    loginPassword = loginUser.password
+    dbPassword = dbUser[0].password
+    if (bcrypt.checkpw(loginPassword.encode('utf-8'), dbPassword)) == False:
+        return -2
 
     return 0

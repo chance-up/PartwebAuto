@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="./static/css/firstlogin.css">
     <script src="https://kit.fontawesome.com/51db22a717.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="static/js/common.js"></script>
 </head>
 
 <body>
@@ -32,25 +35,26 @@
                     <button class="create-account-btn shadow-light" onClick="location.href='/register'">
                         Create Profile</button>
                 </div>
-                <form method="POST" action="login">
+                <form method="POST" id="loginForm">
                     <div class="login-input-container">
 
                         <div class="form-group">
                             <div class="login-input-wrap input-id">
                                 <i class="far fa-envelope"></i>
-                                <input placeholder="Email" name='id' type="text">
+                                <input placeholder="userEmail" name='userEmail' type="text">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <div class="login-input-wrap input-password">
                                 <i class="fas fa-key"></i>
-                                <input placeholder="Password" name='password' type="password">
+                                <input placeholder="password" name='password' type="password">
                             </div>
                         </div>
                     </div>
                     <div class="login-btn-wrap">
-                        <button class="login-btn">Login</button>
+                        <input type="button" class="login-btn" onclick="loginUser()" value="Login">
+                        <!-- <button class="login-btn">Login</button> -->
                         <a href="#">비밀번호를 잃어 버리셨다면 담당자에게 문의하세요</a>
                     </div>
                 </form>
@@ -58,5 +62,28 @@
         </div>
     </div>
 </body>
+<script>
+    function loginUser() {
+        const serializedValues = $('#loginForm').serializeObject()
+
+        var jsonData = JSON.stringify(serializedValues);
+
+        $.ajax({
+            type: 'post',
+            url: '/loginUser',
+            data: jsonData,
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function () {
+                alert("로그인 성공");
+                window.location.href = "/first"
+            },
+            error: function (request, status, error) {
+                alert("Message : " + request.responseText);
+                window.location.href = "/"
+            }
+        });
+    }
+</script>
 
 </html>

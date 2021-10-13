@@ -8,8 +8,10 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="./static/css/register.css">
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="static/js/common.js"></script>
 </head>
 <body>
  {%with messages = get_flashed_messages()%}
@@ -20,34 +22,66 @@
     {%endif%}
   {%endwith%}
 <div class = "container">
-        <div class="row mt-5">
-            <h1>회원가입</h1>
-        </div>
-        <div class="col-12">
-            <br><br>
-            <form method="POST" action="insertUser">
-                <div class="form-group">
-                    <label for="username">이름</label>
-                    <input type="text" class="form-control" id="username" placeholder="이름" name="username"/>
-                </div>
-                <div class="form-group">
-                    <label for="userid">이메일</label>
-                    <input type="email" class="form-control" id="userid" placeholder="you@example.com" name="userid" required/>
-				</div>
+    <div class="row mt-5">
+        <h1>회원가입</h1>
+    </div>
+    <div class="col-12">
+        <br><br>
+        <form method="post" id="registerForm">
+            <div class="form-group">
+                <label for="userName">이름</label>
+                <input type="text" class="form-control" id="userName" placeholder="이름" name="userName"/>
+            </div>
 
-                <div class="form-group">
-                    <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" id="password" placeholder="비밀번호" name="password"/>
-                </div>
-                <div class="form-group">
-                    <label for="confirm_pw">비밀번호 확인</label>
-                    <input type="password" class="form-control" id="confirm_pw" placeholder="비밀번호 확인" name="confirm_pw"/>
-                </div>
-                <button type="submit" class="btn btn-primary btn-lg btn-block">가입 완료</button>
-            </form>
-        </div>
-        </div>
-<script >
+            <div class="form-group">
+                <label for="userEmail">이메일</label>
+                <input type="email" class="form-control" id="userEmail" placeholder="you@example.com" name="userEmail" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input type="password" class="form-control" id="password" placeholder="비밀번호" name="password"/>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">비밀번호 확인</label>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="비밀번호 확인" name="confirmPassword"/>
+            </div>
+            <!-- <button type="submit" class="btn btn-primary btn-lg btn-block">가입 완료</button> -->
+            <input type="button" id="register" class="btn btn-primary btn-lg btn-block" onclick="createUser()" value="가입 완료">
+        </form>
+        
+    </div>
+</div>
+<script>
+    function createUser() {
+        //const serializedValues = $('#registerForm').serializeObject()
+
+        if($("#password").val() !== $("#confirmPassword").val()){
+            alert("Message : 비밀번호가 일치하지 않습니다.");
+            window.location.href = "/register"
+        }
+        var userObject = new Object();
+        userObject.userName = $("#userName").val()
+        userObject.userEmail = $("#userEmail").val()
+        userObject.password = $("#password").val()
+        var jsonData = JSON.stringify(userObject);
+
+        $.ajax({
+            type: 'post',
+            url: '/createUser',
+            data: jsonData,
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function () {
+                alert("회원 가입이 완료되었습니다.");
+                window.location.href = "/"
+            },
+            error:function(request,status,error){
+                alert("Message : " + request.responseText);
+                window.location.href = "/register"
+            }
+        });
+    }
 </script>
 </body>
 </html>

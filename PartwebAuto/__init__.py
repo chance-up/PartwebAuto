@@ -31,6 +31,8 @@ def create_app():
         db.init_app(app)
 
     app = Flask(__name__)
+    app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+    app.config['BCRYPT_LEVEL'] = os.environ.get("BCRYPT_LEVEL")
     setting_blueprint()
     setting_database()
 

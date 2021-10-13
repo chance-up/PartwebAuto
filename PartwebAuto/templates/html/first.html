@@ -10,10 +10,7 @@
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/navbar-static/">
 
-    
-
     <!-- Bootstrap core CSS -->
-
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -31,7 +28,13 @@
     </style>
     <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/navbar-top.css') }}" rel="stylesheet">
-
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+          $('#partNav').load("header.html");
+        });
+    </script>
 
   </head>
   <body>
@@ -42,7 +45,7 @@
     </script>
     {%endif%}
   {%endwith%}
-<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+<!-- <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="/first">Launcher WEB</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
@@ -73,7 +76,8 @@
 
         </div>
     </div>
-</nav>
+</nav> -->
+<nav id="partNav"></nav>
 
 <!--<main class="container">
   <div class="bg-light p-5 rounded">
