@@ -10,3 +10,9 @@ adminbp = Blueprint('admin', __name__, url_prefix='/')
 def admin():
     if request.method == 'GET':
         return render_template('html/admin.html')
+
+
+@adminbp.route('/test', methods=['GET'])
+def admin1():
+    if request.method == 'GET':
+        return render_template('html/nav.html')

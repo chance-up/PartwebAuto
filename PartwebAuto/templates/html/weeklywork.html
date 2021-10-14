@@ -1,125 +1,55 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.87.0">
-    <title>Laucher Web</title>
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/components/collapse/">
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/navbar-static/">
-
-
-    <!-- Bootstrap core CSS -->
-
-    <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-        }
-        
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-    </style>
-    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/navbar-top.css') }}" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-
-
-</head>
-
+{% include 'html/head.html' %}
+{% include 'html/nav.html' %}
 <body>
     {%with messages = get_flashed_messages()%} {%if messages %}
     <script type="text/javascript">
         alert("{{messages[-1]}}");
     </script>
     {%endif%} {%endwith%}
-
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/first">Launcher WEB</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/work">주간보고</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="/schedule">재택 일정 관리</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/list">단말 정보 관리</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin">관리자 페이지</a>
-                    </li>
-                </ul>
-
-            </div>
-        </div>
-    </nav>
     <h1 align="center">주간 보고 작성</h1>
     <div class="container">
+        <div class="row">
+            <div class="col-sm-6 form-group">
+                <div class="input-group" id="DateDemo">
+                    <input type='text' id='weeklyDatePicker' placeholder="Select Week" />
+                </div>
+            </div>
+        </div>
+
         <div class="accordion" id="accordionExample">
-            {% for day in datelist %}
             <div class="card">
                 <div class="card-header" id="headingOne">
                     <h2 class="mb-0">
-                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne-{{day.year}}{{day.month}}{{day.day}}" aria-expanded="true" aria-controls="collapseOne">
-                        {% if day.day-4 < 0 %}
-                        {{day.month}} / {{1}} ~ {{day.month}} / {{day.day}} 주간 보고
-                        {% else %}
-                        {{day.month}} / {{day.day-4}} ~ {{day.month}} / {{day.day}} 주간 보고
-                        {% endif %}
-
-                    </button>
+                        <button class="btn btn-link" type="button" data-toggle="collapse" aria-expanded="true" aria-controls="collapseOne">
+                        </button>
                     </h2>
                 </div>
 
-                <div id="collapseOne-{{day.year}}{{day.month}}{{day.day}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div  class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="row">
                         <div class="card" style="width: 35rem;">
                             <div class="card-body">
-                                <h5 class="card-title">
-                                    {% if day.day-4
-                                    < 0 %} {{day.month}} / {{1}} ~ {{day.month}} / {{day.day}} 주간 보고 내용 {% else %} {{day.month}} / {{day.day-4}} ~ {{day.month}} / {{day.day}} 주간 보고 내용 {% endif %} </h5>
-                                        <hr color="blue">
-                                        <p class="text-monospace">{{datelist[day][0]|safe}}</p>
-                                        <button class="btn btn-primary " data-target="#exampleModal" onclick="foredit('{{day}}','{{datelist[day][0]}}');">수정
-                            </button>
-                                        <button class="btn btn-success" onclick="myFunction('{{day}}')">
-                                관리자 권한으로 보기
-                            </button>
-
+                                <h5 class="card-title">금주주간보고내용</h5>
+                                <hr color="blue">
+                                <p class="text-monospace">금주피테그</p>
+                                <button class="btn btn-primary " data-target="#exampleModal" ">수정</button>
+                                <button class="btn btn-success" >관리자 권한으로 보기</button>
                             </div>
                         </div>
                         <div class="card" style="width: 35rem;">
                             <div class="card-body">
                                 <h5 class="card-title"> 차주 주간 보고 내용</h5>
                                 <hr color="blue">
-                                <p class="text-monospace">{{datelist[day][1]|safe}}</p>
-                                <button class="btn btn-primary " data-target="#next" onclick="nextforedit('{{day}}','{{datelist[day][1]}}');">수정
-                            </button>
-                                <button class="btn btn-success" onclick="myFunction('{{day}}')">
-                                관리자 권한으로 보기
-                            </button>
-
+                                <p class="text-monospace">담주피태그</p>
+                                <button class="btn btn-primary " data-target="#next" ">수정</button>
+                                <button class="btn btn-success" >관리자 권한으로 보기</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
             </div>
         </div>
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -168,64 +98,67 @@
         </div>
     </div>
     <script>
-        var date
+        $(document).ready(function () {
+            initDatePicker();
+        });
+        // var date
 
-        function foredit(key, val) {
-            result = val.replace(/(<br>|<br\/>|<br \/>)/g, '\r\n');
-            result = result.replace(/&nbsp;/gi, ' ');
-            $("#work-text").val(result);
-            date = key
-            document.getElementById('work-text').setAttribute("name", key)
-            $("#exampleModal").modal();
-        }
+        // function foredit(key, val) {
+        //     result = val.replace(/(<br>|<br\/>|<br \/>)/g, '\r\n');
+        //     result = result.replace(/&nbsp;/gi, ' ');
+        //     $("#work-text").val(result);
+        //     date = key
+        //     document.getElementById('work-text').setAttribute("name", key)
+        //     $("#exampleModal").modal();
+        // }
 
-        function nextforedit(key, val) {
-            result = val.replace(/(<br>|<br\/>|<br \/>)/g, '\r\n');
-            result = result.replace(/&nbsp;/gi, ' ');
-            $("#work-text-next").val(result);
-            date = key
-            document.getElementById('work-text-next').setAttribute("name", key)
-            $("#next").modal();
-        }
+        // function nextforedit(key, val) {
+        //     result = val.replace(/(<br>|<br\/>|<br \/>)/g, '\r\n');
+        //     result = result.replace(/&nbsp;/gi, ' ');
+        //     $("#work-text-next").val(result);
+        //     date = key
+        //     document.getElementById('work-text-next').setAttribute("name", key)
+        //     $("#next").modal();
+        // }
 
-        function myFunction(key) {
-            window.location.href = "/work/admin?date=" + key;
+        // function myFunction(key) {
+        //     window.location.href = "/work/admin?date=" + key;
 
-        }
+        // }
 
-        function send_work() {
-            $.ajax({
-                url: "/work",
-                type: "POST",
-                data: {
-                    type: 1,
-                    data: $("#work-text").val(),
-                    date: date
-                },
-                dataType: 'JSON',
-                success: function() {
-                    alert("입력 되었습니다.")
-                    window.location.href = "/work"
-                }
-            });
-        }
+        // function send_work() {
+        //     $.ajax({
+        //         url: "/work",
+        //         type: "POST",
+        //         data: {
+        //             type: 1,
+        //             data: $("#work-text").val(),
+        //             date: date
+        //         },
+        //         dataType: 'JSON',
+        //         success: function() {
+        //             alert("입력 되었습니다.")
+        //             window.location.href = "/work"
+        //         }
+        //     });
+        // }
 
-        function send_next_work() {
-            $.ajax({
-                url: "/work",
-                type: "POST",
-                data: {
-                    type: 2,
-                    data: $("#work-text-next").val(),
-                    date: date
-                },
-                dataType: 'JSON',
-                success: function() {
-                    alert("입력 되었습니다.")
-                    window.location.href = "/work"
-                }
-            });
-        }
+        // function send_next_work() {
+        //     $.ajax({
+        //         url: "/work",
+        //         type: "POST",
+        //         data: {
+        //             type: 2,
+        //             data: $("#work-text-next").val(),
+        //             date: date
+        //         },
+        //         dataType: 'JSON',
+        //         success: function() {
+        //             alert("입력 되었습니다.")
+        //             window.location.href = "/work"
+        //         }
+        //     });
+        // }
     </script>
 </body>
 

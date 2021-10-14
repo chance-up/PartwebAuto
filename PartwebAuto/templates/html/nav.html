@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/first">Launcher WEB</a>
+        <a id="navtitle" class="navbar-brand" href="/first">Launcher WEB</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
             aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -20,8 +20,8 @@
                     <a class="nav-link" href="/workAdmin">관리자 페이지</a>
                 </li>
                 <div class="form-row float-right">
-
-                    <button type="button" class="btn btn-sm btn-info" onclick="location.href = '/logout'">
+                    <h2 id="navh2" class="text-white">{{session['userEmail']}}</h2>
+                    <button type="button" class="btn btn-sm btn-info" onclick="location.href = '/logoutUser'">
                         Log-out
                     </button>
                 </div>

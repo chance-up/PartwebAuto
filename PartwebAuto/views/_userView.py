@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, jsonify, flash
+from flask import Blueprint, request, session, jsonify, render_template
 
 import sys
 import os
@@ -41,4 +41,14 @@ def loginUser():
     if checkResult == -1 or checkResult == -2:
         return "이메일과 비밀번호를 확인하세요.", 400
 
+    # add 'userEmail' in session
+    body = request.get_json()
+    loginUser = User(**body)
+    session['userEmail'] = loginUser.userEmail
     return jsonify({'result': "success"}), 200
+
+
+@userbp.route('/logoutUser')
+def logoutUser():
+    session.pop('userEmail', None)
+    return render_template('Login/login.html')
