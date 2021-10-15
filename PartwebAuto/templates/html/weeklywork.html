@@ -9,7 +9,7 @@
         alert("{{messages[-1]}}");
     </script>
     {%endif%} {%endwith%}
-    <h1 align="center">주간 보고 작성</h1>
+    <h1 align="center" id="weeklyWorkTitle"></h1>
     <div class="container">
         <div class="row">
             <div class="col-sm-6 form-group">
@@ -101,6 +101,8 @@
         $(document).ready(function () {
             initDatePicker();
         });
+
+        
         // var date
 
         // function foredit(key, val) {
