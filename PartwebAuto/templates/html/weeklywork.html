@@ -1,8 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 {% include 'html/head.html' %}
 {% include 'html/nav.html' %}
-<body>
+
+<body id='launcherBody'>
     {%with messages = get_flashed_messages()%} {%if messages %}
     <script type="text/javascript">
         alert("{{messages[-1]}}");
@@ -37,33 +38,12 @@
                 <button type="button" class="btn btn-primary btn-lg">초기화</button>
             </div>
         </div>
-
-        <div class="card bg-light text-dark">
-            <div class="btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-secondary active">
-                    <input type="checkbox" checked autocomplete="off"> Checked 월
-                </label>
-                <label class="btn btn-secondary active">
-                    <input type="checkbox" checked autocomplete="off"> Checked 화
-                </label>
-                <label class="btn btn-secondary active">
-                    <input type="checkbox" checked autocomplete="off"> Checked 수
-                </label>
-                <label class="btn btn-secondary active">
-                    <input type="checkbox" checked autocomplete="off"> Checked 목
-                </label>
-                <label class="btn btn-secondary active">
-                    <input type="checkbox" checked autocomplete="off"> Checked 금
-                </label>
-            </div>
-        </div>
-
     </div>
     <script>
         $(document).ready(function () {
             initDatePicker();
         });
     </script>
+    
 </body>
-
 </html>

@@ -1,32 +1,20 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a id="navtitle" class="navbar-brand" href="/first">Launcher WEB</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="/first">Launcher WEB</a>
+        <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button"
+            data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
+            aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="/weeklyWork">주간보고 / 재택 일정 관리</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="/workSchedule">재택 일정  관리</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/device">단말 정보 관리</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/workAdmin">관리자 페이지</a>
-                </li>
-                <div class="form-row float-right">
-                    <h2 id="navh2" class="text-white">{{session['userEmail']}}</h2>
-                    <button type="button" class="btn btn-sm btn-info" onclick="location.href = '/logoutUser'">
-                        Log-out
-                    </button>
-                </div>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/weeklyWork">주간보고 작성</a></li>
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/workSchedule">재택근무 일정 관리</a></li>
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/device">단말 관리</a></li>
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/admin">관리자 페이지</a></li>
             </ul>
-
         </div>
     </div>
 </nav>
