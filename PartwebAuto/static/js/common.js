@@ -21,11 +21,6 @@ function weekNumByMonth(dateFormat) {
     var selectedDay = moment(inputDate).format("DD");
     var selectedMonth = moment(inputDate).format("MM");
 
-    // console.log("!! " + moment(inputDate).format("MM") + "월의 시작 요일은 : " + moment(inputDate).startOf("month").format("ddd"));
-    // console.log("!! 숫자로바꾸면?:: " + firstDaynameToNumofMonth);
-    // console.log("!! 선택한날짜는?:: " + selectedDay);
-
-    
     if (selectedDay <= (7 - firstDaynameToNumofMonth)) return { weekNum : 1, month : selectedMonth };
     else if (selectedDay >= (8 - firstDaynameToNumofMonth) && selectedDay <= (14 - firstDaynameToNumofMonth)) return {weekNum :2, month : selectedMonth };
     else if (selectedDay >= (15 - firstDaynameToNumofMonth) && selectedDay <= (21 - firstDaynameToNumofMonth)) return {weekNum :3, month : selectedMonth };
@@ -35,17 +30,68 @@ function weekNumByMonth(dateFormat) {
 }
 
 
+function refreshWeeklyWork(week) {
+    $("#thisWeekTextArea").val("");
+    $("#nextWeekTextArea").val("");
+    let date, text;
+    if (week === "thisWeek") {
+        date = getThisWeek("#weeklyDatePicker");
+    }
+    else if (week === "nextWeek") {
+        date = getNextWeek("#weeklyDatePicker");
+    }
+
+    let weeklyWorkObject = new Object();
+    weeklyWorkObject.startDate = date.startDate;
+    weeklyWorkObject.endDate = date.endDate;
+    let jsonData = JSON.stringify(weeklyWorkObject)
+
+    $.ajax({
+        type: 'post',
+        url: '/refreshWeeklyWork',
+        data: jsonData,
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function (response,status) {
+            if(response.result == 'empty'){
+                return;
+            }
+
+            if (week === "thisWeek") {
+                $("#thisWeekTextArea").val(response.text)
+            }
+            else if (week === "nextWeek") {
+                $("#nextWeekTextArea").val(response.text)
+            }
+
+        },
+        error: function (request, status, error) {
+            alert("Message : " + request.responseText);
+            window.location.href = "/weeklyWork"
+        }
+    });
+}
+
+function getThisWeek(picker) {
+    var value = $(picker).val();
+    var startDate = moment(value, "YYYY-MM-DD").day(1).format("YYYY-MM-DD");
+    var endDate = moment(value, "YYYY-MM-DD").day(5).format("YYYY-MM-DD");
+    return { startDate: startDate, endDate: endDate };
+}
+
+function getNextWeek(picker) {
+    var value = $(picker).val();
+    var startDate = moment(value, "YYYY-MM-DD").day(1).add(7,"d").format("YYYY-MM-DD");
+    var endDate = moment(value, "YYYY-MM-DD").day(5).add(7,"d").format("YYYY-MM-DD");
+    return { startDate: startDate, endDate: endDate };
+}
+
+
 function initDatePicker() {
     moment.locale('en', {
-        week: { dow: 1 } // Monday is the first day of the week
+        week: { dow: 1 } 
     });
 
-    //$("#weeklyDatePicker").val(firstDate + " - " + lastDate)
-
-
-    
-
-    //Initialize the datePicker(I have taken format as mm-dd-yyyy, you can     //have your owh)
     $("#weeklyDatePicker").datetimepicker({
         format: 'YYYY-MM-DD',
         dayViewHeaderFormat:'YYYY-MM',
@@ -53,27 +99,24 @@ function initDatePicker() {
         toolbarPlacement:'top'
     });
 
-    $("#weeklyDatePicker").val(moment().day(1).format("YYYY-MM-DD") + " ~ " + moment().day(5).format("YYYY-MM-DD"));
-    let weekTitle = weekNumByMonth(moment().day(1).format("YYYY-MM-DD"));
-    $("#weeklyWorkTitle").text(""+weekTitle.month+"월 " + weekTitle.weekNum + "주차 주간보고");
-    //$("#weeklyWorkTitle").val("" + weekTitle + "주차 주간보고");
-    
-    
-    // var tempDate = moment("2021-01-01");
-    // for (var i = 0; i < 365; i++){
-    //     tempDate.add(1, 'd')
-    //     console.log("현재날짜 : " + tempDate.format("YYYY-MM-DD") + ", 주차 : " + weekNumByMonth(tempDate.format("YYYY-MM-DD")));
-    // }
-    // var temp = weekNumberByMonth(moment().day(1).format("YYYY-MM-DD"));
-    // console.log(moment().day(1).format("YYYY-MM-DD"));
-    // console.log(temp);
-    
-    // if (weekdayNameToNum[firstDaynameofMonth] < ) {
-        
-    // }
+    // 이번 주를 나타냄
+    // 이번 주 월요일
+    let thisMonday = moment().day(1);
+    let thisFriday = moment().day(5);
+    let nextMonday = moment().day(1).add(7,"d");
+    let nextFriday = moment().day(5).add(7,"d");
+    let weekTitle = weekNumByMonth(thisMonday.format("YYYY-MM-DD"));
 
+    $("#weeklyDatePicker").val(thisMonday.format("YYYY-MM-DD") + " ~ " + thisFriday.format("YYYY-MM-DD"));
+    $("#weeklyWorkTitle").text("" + weekTitle.month + "월 " + weekTitle.weekNum + "주차 주간보고");
+    //$("#weeklyWorkTitle").text("" + thisMonday.format("MM") + "월 " + weekTitle.weekNum + "주차 주간보고");
 
-    // $('#weeklyWorkTitle').val(" " + temp.month + "월 " + temp.weekNo + "주차 주간보고");
+    $("#thisWeekTextAreaLabel").text("이번 주 실적(" + thisMonday.format("YYYY-MM-DD") + " ~ " + thisFriday.format("YYYY-MM-DD")+")");
+    $("#nextWeekTextAreaLabel").text("다음 주 계획(" + nextMonday.format("YYYY-MM-DD") + " ~ " + nextFriday.format("YYYY-MM-DD") + ")");
+    
+    refreshWeeklyWork('thisWeek');
+    refreshWeeklyWork('nextWeek');
+
 
     //Get the value of Start and End of Week
     $('#weeklyDatePicker').on('dp.change', function (e) {
@@ -81,7 +124,53 @@ function initDatePicker() {
         var firstDate = moment(value, "YYYY-MM-DD").day(1).format("YYYY-MM-DD");
         var lastDate = moment(value, "YYYY-MM-DD").day(5).format("YYYY-MM-DD");
         $("#weeklyDatePicker").val(firstDate + " ~ " + lastDate);
-        let weekTitle = weekNumByMonth(firstDate);
-        $("#weeklyWorkTitle").text(""+weekTitle.month+"월 " + weekTitle.weekNum + "주차 주간보고");
+        let thisWeekTitle = weekNumByMonth(firstDate);
+        $("#weeklyWorkTitle").text("" + thisWeekTitle.month + "월 " + thisWeekTitle.weekNum + "주차 주간보고");
+
+        let nextWeekFirstDate = moment(value, "YYYY-MM-DD").day(1).add(7, "d").format("YYYY-MM-DD");
+        let nextWeekLastDate = moment(value, "YYYY-MM-DD").day(5).add(7, "d").format("YYYY-MM-DD");
+
+        $("#thisWeekTextAreaLabel").text("이번 주 실적(" + firstDate + "~" + lastDate+")");
+        $("#nextWeekTextAreaLabel").text("다음 주 계획(" + nextWeekFirstDate + "~" + nextWeekLastDate + ")");
+        
+        refreshWeeklyWork('thisWeek');
+        refreshWeeklyWork('nextWeek');
     });
 }
+
+
+
+function saveWeeklyWork(week) {
+    let date, text;
+    if(week === "thisWeek"){
+        date = getThisWeek("#weeklyDatePicker");
+        text = $("#thisWeekTextArea").val();
+    }
+    else if (week === "nextWeek"){
+        date = getNextWeek("#weeklyDatePicker");
+        text = $("#nextWeekTextArea").val();
+    }
+
+    let weeklyWorkObject = new Object();
+    weeklyWorkObject.startDate = date.startDate;
+    weeklyWorkObject.endDate = date.endDate;
+    weeklyWorkObject.text = text;
+    let jsonData = JSON.stringify(weeklyWorkObject)
+
+    $.ajax({
+        type: 'post',
+        url: '/saveWeeklyWork',
+        data: jsonData,
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function () {
+            alert("저장 완료");
+        },
+        error: function (request, status, error) {
+            alert("Message : " + request.responseText);
+        }
+    });
+}
+
+
+

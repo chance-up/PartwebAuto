@@ -1,14 +1,43 @@
 import sys
 import os
 import bcrypt
-
+from flask import jsonify, session
 
 from PartwebAuto.models.models import User
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 
-# 회원가입 - 유저 Email,Name 검증
+def logoutUser(request):
+    session.pop('userEmail', None)
+    return 0
+
+
+def loginUser(request):
+    checkResult = checkUser(request)
+    if checkResult == -1 or checkResult == -2:
+        return {'result': "fail", 'msg': "id or password check fail!"}
+
+    # add 'userEmail' in session
+    body = request.get_json()
+    loginUser = User(**body)
+    session['userEmail'] = loginUser.userEmail
+    return jsonify({'result': "success"})
+
+
+def createUser(request):
+    checkValidResult = checkUserValid(request)
+    if checkValidResult == -1:
+        return jsonify({'result': "fail", 'msg': "user email check fail!"})
+
+    if checkValidResult == -2:
+        return jsonify({'result': "fail", 'msg': "user name check fail!"})
+
+    user = insertUser(request)
+
+    return jsonify(user)
+
+
 def checkUserValid(request):
     body = request.get_json()
     user = User(**body)
@@ -24,7 +53,6 @@ def checkUserValid(request):
     return 0
 
 
-# 회원가입 - 유저 삽입
 def insertUser(request):
     body = request.get_json()
     user = User(**body)
@@ -35,7 +63,6 @@ def insertUser(request):
     return user
 
 
-# 로그인 - 유저 검증
 def checkUser(request):
     body = request.get_json()
     loginUser = User(**body)

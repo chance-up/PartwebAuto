@@ -20,3 +20,18 @@ body {
 #weeklyDatePicker {
   font-size: 1.5rem;
 }
+
+#nextWeekTextArea {
+  font-size: 1.8rem;
+}
+#thisWeekTextArea {
+  font-size: 1.8rem;
+}
+
+#thisWeekTextAreaLabel {
+  font-size: 1.8rem;
+}
+
+#nextWeekTextAreaLabel {
+  font-size: 1.8rem;
+}
