@@ -6,6 +6,11 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 devicebp = Blueprint('device', __name__, url_prefix='/')
 
 
+@devicebp.route('/device', methods=['GET', 'PUT', 'POST', 'DELETE'])
+def device():
+    if request.method == 'GET':
+        return render_template('html/device.html')
+
 # @devicebp.route('/device', methods=['GET', 'PUT', 'POSt', 'DELETE'])
 # def device():
 #     if request.method == 'GET':

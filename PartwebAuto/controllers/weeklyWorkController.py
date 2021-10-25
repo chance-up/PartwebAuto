@@ -5,7 +5,7 @@ from flask import jsonify, session
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
-# 주간보고 저장 - 유저 삽입
+# 주간보고 저장
 
 
 def saveWeeklyWork(request):
@@ -19,6 +19,7 @@ def saveWeeklyWork(request):
     return jsonify(weeklyWork)
 
 
+# 주간보고 불러오기
 def refreshWeeklyWork(request):
     body = request.get_json()
     weeklyWork = WeeklyWork(**body)

@@ -1,7 +1,7 @@
 import sys
 import os
 import bcrypt
-from flask import jsonify, session
+from flask import jsonify, session, make_response
 
 from PartwebAuto.models.models import User
 
@@ -15,27 +15,28 @@ def logoutUser(request):
 
 def loginUser(request):
     checkResult = checkUser(request)
+    print(checkResult)
     if checkResult == -1 or checkResult == -2:
-        return {'result': "fail", 'msg': "id or password check fail!"}
+        return make_response({'result': "fail", 'msg': "id or password check fail!"}, 500)
 
     # add 'userEmail' in session
     body = request.get_json()
     loginUser = User(**body)
     session['userEmail'] = loginUser.userEmail
-    return jsonify({'result': "success"})
+    return make_response(jsonify({'result': "success"}), 201)
 
 
 def createUser(request):
     checkValidResult = checkUserValid(request)
     if checkValidResult == -1:
-        return jsonify({'result': "fail", 'msg': "user email check fail!"})
+        return make_response(jsonify({'result': "fail", 'msg': "user email already exist!"}), 500)
 
     if checkValidResult == -2:
-        return jsonify({'result': "fail", 'msg': "user name check fail!"})
+        return make_response(jsonify({'result': "fail", 'msg': "user name already exist!"}), 500)
 
     user = insertUser(request)
 
-    return jsonify(user)
+    return make_response(jsonify(user), 201)
 
 
 def checkUserValid(request):
@@ -43,11 +44,11 @@ def checkUserValid(request):
     user = User(**body)
 
     # step 1 : Validate that a "userEmail" exists
-    if len(User.objects(userEmail__exact=user.userEmail)):
+    if User.objects(userEmail=user.userEmail).count() != 0:
         return -1
 
     # step 2 : Validate that a "userName" exists
-    if len(User.objects(userName__exact=user.userName)):
+    if User.objects(userName=user.userName).count() != 0:
         return -2
 
     return 0

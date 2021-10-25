@@ -1,6 +1,5 @@
 
-from flask import Blueprint, request, session, render_template, jsonify, flash
-from werkzeug.utils import redirect
+from flask import Blueprint, request, render_template
 import sys
 import os
 from controllers import userController
@@ -21,15 +20,15 @@ def register():
 
 @loginbp.route('/createUser', methods=['POST'])
 def createUser():
-    return userController.createUser(request), 201
+    return userController.createUser(request)
 
 
 @loginbp.route('/loginUser', methods=['POST'])
 def loginUser():
-    return userController.loginUser(request), 201
+    return userController.loginUser(request)
 
 
 @loginbp.route('/logoutUser')
 def logoutUser():
-    userController.loginUser(request)
+    userController.logoutUser(request)
     return render_template('Login/login.html')

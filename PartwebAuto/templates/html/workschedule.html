@@ -19,29 +19,131 @@
             </div>
         </div>
         <div class="card bg-light text-dark">
-            <div class="btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-secondary active">
-                    <input type="checkbox" checked autocomplete="off"> Checked 월
-                </label>
-                <label class="btn btn-secondary active">
-                    <input type="checkbox" autocomplete="off"> Checked 화
-                </label>
-                <label class="btn btn-secondary active">
-                    <input type="checkbox" checked autocomplete="off"> Checked 수
-                </label>
-                <label class="btn btn-secondary active">
-                    <input type="checkbox" autocomplete="off"> Checked 목
-                </label>
-                <label class="btn btn-secondary active">
-                    <input type="checkbox" checked autocomplete="off"> Checked 금
-                </label>
+            <div class="row">
+                <div class="col-4">
+                    <h3 class="weekTitle" id="monWorkTitle">월요일</h3>
+                </div>
+                <div class="col-8">
+                    <select class="form-select form-select-lg mb-3" id="monWork">
+                        <option value="0" selected>사무실</option>
+                        <option value="1">재택</option>
+                        <option value="2">휴무</option>
+                    </select>
+                </div>
             </div>
         </div>
+        <div class="card bg-light text-dark">
+            <div class="row">
+                <div class="col-4">
+                    <h3 class="weekTitle" id="tueWorkTitle">화요일</h3>
+                </div>
+                <div class="col-8">
+                    <select class="form-select form-select-lg mb-3" id="tueWork">
+                        <option value="0" selected>사무실</option>
+                        <option value="1">재택</option>
+                        <option value="2">휴무</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-light text-dark">
+            <div class="row">
+                <div class="col-4">
+                    <h3 class="weekTitle" id="wedWorkTitle">수요일</h3>
+                </div>
+                <div class="col-8">
+                    <select class="form-select form-select-lg mb-3" id="wedWork">
+                        <option value="0" selected>사무실</option>
+                        <option value="1">재택</option>
+                        <option value="2">휴무</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-light text-dark">
+            <div class="row">
+                <div class="col-4">
+                    <h3 class="weekTitle" id="thuWorkTitle">목요일</h3>
+                </div>
+                <div class="col-8">
+                    <select class="form-select form-select-lg mb-3" id="thuWork">
+                        <option value="0" selected>사무실</option>
+                        <option value="1">재택</option>
+                        <option value="2">휴무</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-light text-dark">
+            <div class="row">
+                <div class="col-4">
+                    <h3 class="weekTitle" id="friWorkTitle"></h3>
+                </div>
+                <div class="col-8">
+                    <select class="form-select form-select-lg mb-3" id="friWork">
+                        <option value="0" selected>사무실</option>
+                        <option value="1">재택</option>
+                        <option value="2">휴무</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <input type="button" class="w-100 btn btn-lg btn-primary" id="saveWork" onclick="saveWorkSchedule()" value="저장">
     </div>
-    <script>
-        $(document).ready(function () {
-            initScheduleDatePicker();
-        });
-    </script>
 </body>
+<script>
+    $(document).ready(function () {
+            initScheduleDatePicker();
+    });
+
+    function saveWorkSchedule() {
+        var value = $("#scheduleDatePicker").val();
+        let mon = {
+            date: moment(value, "YYYY-MM-DD").day(1).format("YYYY-MM-DD"),
+            schedule : $("#monWork").val()
+        };
+        let tue = {
+            date: moment(value, "YYYY-MM-DD").day(2).format("YYYY-MM-DD"),
+            schedule: $("#tueWork").val()
+        };
+        let wed = {
+            date: moment(value, "YYYY-MM-DD").day(3).format("YYYY-MM-DD"),
+            schedule: $("#wedWork").val()
+        };
+        let thu = {
+            date: moment(value, "YYYY-MM-DD").day(4).format("YYYY-MM-DD"),
+            schedule: $("#thuWork").val()
+        };
+        let fri = {
+            date: moment(value, "YYYY-MM-DD").day(5).format("YYYY-MM-DD"),
+            schedule: $("#friWork").val()
+        };
+        
+        let serializedValues = new Array();
+        serializedValues.push(mon);
+        serializedValues.push(tue);
+        serializedValues.push(wed);
+        serializedValues.push(thu);
+        serializedValues.push(fri);
+        var jsonData = JSON.stringify(serializedValues);
+
+        $.ajax({
+            type: 'post',
+            url: '/saveWorkSchedule',
+            data: jsonData,
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function () {
+                alert("저장 성공");
+                window.location.href = "/workSchedule"
+            },
+            error: function (request, status, error) {
+                alert("Message : " + request.responseJSON.msg);
+                window.location.href = "/"
+            }
+        });
+    }
+
+
+</script>
 </html>
