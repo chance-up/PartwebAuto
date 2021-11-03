@@ -30,15 +30,15 @@ function weekNumByMonth(dateFormat) {
 }
 
 
-function refreshWeeklyWork(week) {
-    $("#thisWeekTextArea").val("");
-    $("#nextWeekTextArea").val("");
+function refreshWeeklyWork(week,thisWeekTextArea,nextWeekTextArea, DatePicker) {
+    $(thisWeekTextArea).val("");
+    $(nextWeekTextArea).val("");
     let date, text;
     if (week === "thisWeek") {
-        date = getThisWeek("#weeklyDatePicker");
+        date = getThisWeek(DatePicker);
     }
     else if (week === "nextWeek") {
-        date = getNextWeek("#weeklyDatePicker");
+        date = getNextWeek(DatePicker);
     }
 
     let weeklyWorkObject = new Object();
@@ -58,10 +58,10 @@ function refreshWeeklyWork(week) {
             }
 
             if (week === "thisWeek") {
-                $("#thisWeekTextArea").val(response.text)
+                $(thisWeekTextArea).val(response.text)
             }
             else if (week === "nextWeek") {
-                $("#nextWeekTextArea").val(response.text)
+                $(nextWeekTextArea).val(response.text)
             }
 
         },
@@ -124,9 +124,8 @@ function initDatePicker() {
     $("#thisWeekTextAreaLabel").text("이번 주 실적(" + thisMonday.format("YYYY-MM-DD") + " ~ " + thisFriday.format("YYYY-MM-DD")+")");
     $("#nextWeekTextAreaLabel").text("다음 주 계획(" + nextMonday.format("YYYY-MM-DD") + " ~ " + nextFriday.format("YYYY-MM-DD") + ")");
     
-    refreshWeeklyWork('thisWeek');
-    refreshWeeklyWork('nextWeek');
-
+    refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker");
+    refreshWeeklyWork('nextWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker");
 
     //Get the value of Start and End of Week
     $('#weeklyDatePicker').on('dp.change', function (e) {
@@ -143,8 +142,8 @@ function initDatePicker() {
         $("#thisWeekTextAreaLabel").text("이번 주 실적(" + firstDate + "~" + lastDate+")");
         $("#nextWeekTextAreaLabel").text("다음 주 계획(" + nextWeekFirstDate + "~" + nextWeekLastDate + ")");
         
-        refreshWeeklyWork('thisWeek');
-        refreshWeeklyWork('nextWeek');
+        refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker");
+        refreshWeeklyWork('nextWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker");
     });
 }
 
@@ -183,36 +182,74 @@ function saveWeeklyWork(week) {
 }
 
 
-function refreshWorkSchedule() {
-    let date = getThisWeek("#scheduleDatePicker");
+function refreshWorkSchedule(DatePicker,flag) {
+    let date = getThisWeek(DatePicker);
     let workScheduleObject = new Object();
     workScheduleObject.startDate = date.startDate;
     workScheduleObject.endDate = date.endDate;
     let jsonData = JSON.stringify(workScheduleObject)
 
-    $.ajax({
-        type: 'post',
-        url: '/refreshWorkSchedule',
-        data: jsonData,
-        dataType: 'json',
-        contentType: 'application/json',
-        success: function (response) {
-            $("#monWork").val(response[0].schedule)
-            $("#tueWork").val(response[1].schedule)
-            $("#wedWork").val(response[2].schedule)
-            $("#thuWork").val(response[3].schedule)
-            $("#friWork").val(response[4].schedule)
-        },
-        error: function (request, status, error) {
-            if (request.responseJSON.result == 'fail') {
-                $("#monWork").val(0)
-                $("#tueWork").val(0)
-                $("#wedWork").val(0)
-                $("#thuWork").val(0)
-                $("#friWork").val(0)
+    let forAdminSchedune = {
+        0: "사무실",
+        1: "재택",
+        2: "휴무",
+    }
+    // workSchedule.html에서 호출한 경우
+    if (flag === 0) {
+        $.ajax({
+            type: 'post',
+            url: '/refreshWorkSchedule',
+            data: jsonData,
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (response) {
+                $("#monWork").val(response[0].schedule)
+                $("#tueWork").val(response[1].schedule)
+                $("#wedWork").val(response[2].schedule)
+                $("#thuWork").val(response[3].schedule)
+                $("#friWork").val(response[4].schedule)
+            },
+            error: function (request, status, error) {
+                if (request.responseJSON.result == 'fail') {
+                    $("#monWork").val(0)
+                    $("#tueWork").val(0)
+                    $("#wedWork").val(0)
+                    $("#thuWork").val(0)
+                    $("#friWork").val(0)
+                }
             }
-        }
-    });
+        });
+    }
+    // admin.html에서 호출한 경우
+    else {
+        $.ajax({
+            type: 'post',
+            url: '/refreshWorkSchedule',
+            data: jsonData,
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (response) {
+                $(".modal-body #mon").text(forAdminSchedune[response[0].schedule])
+                $(".modal-body #tue").text(forAdminSchedune[response[1].schedule])
+                $(".modal-body #wed").text(forAdminSchedune[response[2].schedule])
+                $(".modal-body #thu").text(forAdminSchedune[response[3].schedule])
+                $(".modal-body #fri").text(forAdminSchedune[response[4].schedule])
+                console.log(response[0].schedule)
+                console.log(forAdminSchedune[0])
+                console.log(forAdminSchedune[response[0].schedule])
+            },
+            error: function (request, status, error) {
+                if (request.responseJSON.result == 'fail') {
+                    $(".modal-body #mon").text("no schedule");
+                    $(".modal-body #tue").text("no schedule");
+                    $(".modal-body #wed").text("no schedule");
+                    $(".modal-body #thu").text("no schedule");
+                    $(".modal-body #fri").text("no schedule");
+                }
+            }
+        });
+    }
+    
 }
 
 
@@ -256,7 +293,7 @@ function initScheduleDatePicker() {
     $("#friWorkTitle").html("금요일<br/>[" + moment().day(5).format("DD") + "일]");
     
     // DB에서 불러온 각 Select값 Set
-    refreshWorkSchedule();
+    refreshWorkSchedule("#scheduleDatePicker",0);
 
     $('#scheduleDatePicker').on('dp.change', function (e) {
         var value = $("#scheduleDatePicker").val();
@@ -277,6 +314,139 @@ function initScheduleDatePicker() {
         $("#friWorkTitle").html("금요일<br/>[" + moment(value, "YYYY-MM-DD").day(5).format("DD") + "일]");
 
         // DB에서 불러온 각 Select값 Set
-        refreshWorkSchedule();
+        refreshWorkSchedule("#scheduleDatePicker",0);
+    });
+}
+
+
+// device.html 
+function getDevice(mac){
+    let device;
+    $.ajax({
+        type: 'get',
+        url: '/getDevice',
+        data: { devMacId : mac},
+        async: false,
+        success: function (response,status) {
+            device = response;
+
+        },
+        error: function (request, status, error) {
+            alert("Message : " + request.responseJSON.msg);
+            device = 0;
+        }
+    });
+    return device;
+}
+
+// device.html 
+function getDevices(userName){
+    let devices;
+    $.ajax({
+        type: 'get',
+        url: '/getDevices',
+        data: { userName : userName},
+        async: false,
+        success: function (response,status) {
+            devices = response;
+
+        },
+        error: function (request, status, error) {
+            alert("Message : " + request.responseJSON.msg);
+            devices = 0;
+        }
+    });
+    return devices;
+}
+
+function initDevice() {
+    var table = $('#table_id').DataTable({
+        select: true,
+        ordering: false,
+        paging: false
+    });
+
+
+    $('#table_id tbody').on('click', 'tr', function () {
+        if (table.row(this).index() === 0) {
+            $('#gigaModal').modal('show');
+            return;
+        }
+        let device = getDevice(table.row(this).data()[1]);
+        $(".modal-body #model").val(device.model);
+        $(".modal-body #mac").val(device.devMacId);
+        $(".modal-body #said").val(device.said);
+        $(".modal-body #user").val(device.userName);
+        $(".modal-body #otv").prop("checked", device.otv);
+        $(".modal-body #serial").prop("checked", device.serial);
+        $(".modal-body #msg").val(device.msg);
+
+        $('#gigaModal').modal('show');
+    });
+}
+
+// admin.html
+function initAdmin() {
+    $('#table_admin').DataTable({
+        ordering: false,
+        paging: false,
+        autoWidth: false,
+    });
+}
+// admin.html
+function initAdminDeviceTable() {
+    $('#tableAdminDevice').DataTable({
+        ordering: false,
+        paging: false,
+        autoWidth: false,
+        info: false
+    });
+}
+
+function destroyAdminDeviceTable() {
+    $('#tableAdminDevice').DataTable().destroy();
+}
+
+function initAdminDatePicker() {
+    moment.locale('en', {
+        week: { dow: 1 } 
+    });
+
+    
+
+    $("#adminDatePicker").datetimepicker({
+        format: 'YYYY-MM-DD',
+        dayViewHeaderFormat:'YYYY-MM',
+        daysOfWeekDisabled:[0,6],
+        toolbarPlacement: 'top',
+        icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-arrow-up",
+            down: "fa fa-arrow-down",
+            previous: "fa fa-chevron-left",
+            next: "fa fa-chevron-right",
+            today: "fa fa-clock-o",
+            clear: "fa fa-trash-o"
+        }
+    });
+
+    let thisMonday = moment().day(1);
+    let thisFriday = moment().day(5);
+    $("#adminDatePicker").val(thisMonday.format("YYYY-MM-DD") + " ~ " + thisFriday.format("YYYY-MM-DD"));
+
+    refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#adminDatePicker");
+    refreshWeeklyWork('nextWeek',"#thisWeekTextArea","#nextWeekTextArea","#adminDatePicker");
+    refreshWorkSchedule("#adminDatePicker",1);
+    //Get the value of Start and End of Week
+    $('#adminDatePicker').on('dp.change', function (e) {
+        var value = $("#adminDatePicker").val();
+        var firstDate = moment(value, "YYYY-MM-DD").day(1).format("YYYY-MM-DD");
+        var lastDate = moment(value, "YYYY-MM-DD").day(5).format("YYYY-MM-DD");
+        $("#adminDatePicker").val(firstDate + " ~ " + lastDate);
+
+        refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#adminDatePicker");
+        refreshWeeklyWork('nextWeek', "#thisWeekTextArea", "#nextWeekTextArea", "#adminDatePicker");
+        refreshWorkSchedule("#adminDatePicker",1);
     });
 }

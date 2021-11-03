@@ -80,3 +80,15 @@ def checkUser(request):
         return -2
 
     return 0
+
+
+def getAllUsers():
+    allUser = User.objects()
+
+    for val in allUser:
+        print(val['userName'])
+
+    if(allUser == None):
+        return 0
+
+    return allUser

@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, jsonify, session
 import sys
 import os
 from PartwebAuto.decorators import decorator
-from controllers import weeklyWorkController
+from PartwebAuto.controllers import weeklyWorkController
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 

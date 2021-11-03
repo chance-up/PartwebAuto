@@ -75,9 +75,8 @@
         userObject.userName = $("#userName").val()
         userObject.userEmail = $("#userEmail").val()
         userObject.password = $("#password").val()
+        userObject.isAdmin = false;
         var jsonData = JSON.stringify(userObject)
-        console.log(userObject)
-        console.log(jsonData)
 
         $.ajax({
             type: 'post',

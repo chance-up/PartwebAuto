@@ -361,6 +361,7 @@ th {
   border-color: inherit;
   border-style: solid;
   border-width: 0;
+  font-size: 0.7rem;
 }
 
 label {
@@ -3756,7 +3757,7 @@ fieldset:disabled .btn {
 .btn-sm,
 .btn-group-sm > .btn {
   padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.3rem;
   border-radius: 0.25rem;
 }
 
@@ -11907,4 +11908,13 @@ html {
 
 #saveWork {
   margin-top: 1rem;
+}
+
+#table_id_filter {
+  float: right !important;
+}
+
+#adminDatePicker {
+  font-size: 1rem;
+  width: 13rem;
 }

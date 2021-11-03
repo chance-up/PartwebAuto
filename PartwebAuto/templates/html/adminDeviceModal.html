@@ -1,0 +1,35 @@
+<div class="modal fade" id="adminDeviceModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">사용 중 단말</h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <h6 id="ModalLabelUserName"></h6>
+                    <div class="mb-3">
+                        <table id="tableAdminDevice" class="table table-striped table-bordered" style="width:100%">
+                        
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%">Model</th>
+                                    <th style="width: 30%">MAC</th>
+                                    <th style="width: 30%">SAID</th>
+                                    <th style="width: 30%">User</th>
+                                </tr>
+                            </thead>
+                        
+                            <tbody id=workModalTBody>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id=closeAdminDeviceModal>Close</button>
+            </div>
+        </div>
+    </div>
+</div>

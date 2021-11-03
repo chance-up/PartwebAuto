@@ -1,15 +1,37 @@
+
 from flask import Blueprint, request, render_template, jsonify
 import sys
 import os
+from PartwebAuto.controllers import deviceController
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-
 devicebp = Blueprint('device', __name__, url_prefix='/')
 
 
-@devicebp.route('/device', methods=['GET', 'PUT', 'POST', 'DELETE'])
+@devicebp.route('/device', methods=['GET'])
 def device():
     if request.method == 'GET':
-        return render_template('html/device.html')
+        return render_template('html/device.html', allDevices=deviceController.getAllDevices())
+
+
+@devicebp.route('/getDevice', methods=['GET'])
+def getDevice():
+    return deviceController.getDevice(request)
+
+
+@devicebp.route('/getDevices', methods=['GET'])
+def getDevices():
+    return deviceController.getDevices(request)
+
+
+@devicebp.route('/insertDevice', methods=['POST'])
+def insertDevice():
+    return deviceController.insertDevice(request)
+
+
+@devicebp.route('/deleteDevice', methods=['POST'])
+def deleteDevice():
+    return deviceController.deleteDevice(request)
+
 
 # @devicebp.route('/device', methods=['GET', 'PUT', 'POSt', 'DELETE'])
 # def device():

@@ -2,7 +2,7 @@
 from flask import Blueprint, request, render_template
 import sys
 import os
-from controllers import userController
+from PartwebAuto.controllers import userController
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 loginbp = Blueprint('login', __name__, url_prefix='/')

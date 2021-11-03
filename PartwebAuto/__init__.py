@@ -9,13 +9,13 @@ db = MongoEngine()
 
 def create_app():
     def setting_blueprint():
-        from .views import adminView, deviceView, firstView, loginView, weeklyWorkView, workAdminView, workScheduleView
+        from .views import adminView, deviceView, firstView, loginView, weeklyWorkView, workScheduleView
+
         app.register_blueprint(adminView.adminbp)
         app.register_blueprint(deviceView.devicebp)
         app.register_blueprint(firstView.firstbp)
         app.register_blueprint(loginView.loginbp)
         app.register_blueprint(weeklyWorkView.weeklyWorkbp)
-        app.register_blueprint(workAdminView.workAdminbp)
         app.register_blueprint(workScheduleView.workSchedulebp)
 
     def setting_database():

@@ -1,0 +1,49 @@
+<div class="modal fade" id="gigaModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">단말 정보 수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="model" class="col-form-label">model</label>
+                        <input type="text" class="form-control" id="model">
+                    </div>
+                    <div class="mb-3">
+                        <label for="mac" class="col-form-label">MAC</label>
+                        <input type="text" class="form-control" id="mac">
+                    </div>
+                    <div class="mb-3">
+                        <label for="said" class="col-form-label">SAID</label>
+                        <input type="text" class="form-control" id="said">
+                    </div>
+                    <div class="mb-3">
+                        <label for="user" class="col-form-label">사용자</label>
+                        <input type="text" class="form-control" id="user">
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="otv" class="col-form-label">OTV</label>
+                            <input class="form-check-input" type="checkbox" value="" id="otv">
+                        </div>
+                        <div class="col">
+                            <label for="serial" class="col-form-label">시리얼 포트 여부</label>
+                            <input class="form-check-input" type="checkbox" value="" id="serial">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="msg" class="col-form-label">비고</label>
+                        <textarea class="form-control" id="msg"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveDevice()">Save</button>
+                <button type="button" class="btn btn-primary" onclick="deleteDevice()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

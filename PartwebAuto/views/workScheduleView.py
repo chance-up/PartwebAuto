@@ -1,8 +1,8 @@
-from controllers import workScheduleController
 from flask import Blueprint, request, render_template, jsonify
 import sys
 import os
 from PartwebAuto.decorators import decorator
+from PartwebAuto.controllers import workScheduleController
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 workSchedulebp = Blueprint('workSchedule', __name__, url_prefix='/')

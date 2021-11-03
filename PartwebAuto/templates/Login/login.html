@@ -63,9 +63,8 @@
 <script>
     function loginUser() {
         const serializedValues = $('#loginForm').serializeObject()
-
         var jsonData = JSON.stringify(serializedValues);
-
+        
         $.ajax({
             type: 'post',
             url: '/loginUser',
