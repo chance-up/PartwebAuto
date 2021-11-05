@@ -11914,7 +11914,15 @@ html {
   float: right !important;
 }
 
+#table_admin_filter {
+  float: right !important;
+}
+
 #adminDatePicker {
   font-size: 1rem;
   width: 13rem;
+}
+
+#logoutButton {
+  font-size: 0.6rem;
 }

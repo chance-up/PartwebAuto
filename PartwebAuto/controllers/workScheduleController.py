@@ -8,22 +8,52 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 
 def saveWorkSchedule(request):
-    for saveWorkSchedule in request.get_json():
-        body = saveWorkSchedule
-        workSchedule = WorkSchedule(**body)
-        workSchedule.userEmail = session['userEmail']
-        workSchedule.save()
+    body = request.get_json()
+    workSchedule = WorkSchedule(**body)
+    workSchedule['userEmail'] = session['userEmail']
 
-    return make_response(jsonify({'result': "success"}), 201)
+    dbWorkSchedule = WorkSchedule.objects(
+        startDate=workSchedule.startDate, userEmail=session['userEmail']).first()
+
+    if(dbWorkSchedule == None):
+        return make_response(jsonify(workSchedule.save()), 201)
+    else:
+        return make_response(jsonify(dbWorkSchedule.update(**body)), 201)
+
+  
 
 
 def refreshWorkSchedule(request):
-    selectedSchedule = request.get_json()
-    workSchedules = WorkSchedule.objects(userEmail=session['userEmail']).filter(
-        date__gte=selectedSchedule['startDate'], date__lte=selectedSchedule['endDate'])
+    body = request.get_json()
+    workSchedule = WorkSchedule(**body)
 
-    if(workSchedules.count() != 5):
-        return make_response({'result': "fail", 'msg': "There is no schedule!"}, 500)
+    dbWorkSchedule = WorkSchedule.objects(
+        startDate=workSchedule.startDate, userEmail=session['userEmail']).first()
 
-    print(workSchedules.count())
-    return make_response(jsonify(workSchedules), 201)
+    print(dbWorkSchedule)
+
+    if(dbWorkSchedule == None):
+        return make_response(jsonify({'result': 'empty'}), 500)
+
+    return make_response(jsonify(dbWorkSchedule), 201)
+    # selectedSchedule = request.get_json()
+
+    # dbWorkSchedule = WorkSchedule.objects(userEmail=session['userEmail'], ).filter(
+    #     date__gte=selectedSchedule['startDate'], date__lte=selectedSchedule['endDate'])
+
+    # if(workSchedules.count() != 5):
+    #     return make_response({'result': "fail", 'msg': "There is no schedule!"}, 500)
+
+    # # 개인 주간보고 탭에서는 session에 userEmail이 저장되어 있으므로 값이 넘어오지 않음
+    # if weeklyWork['userEmail'] == "":
+    #     refreshedWeeklyWork = WeeklyWork.objects(
+    #         startDate=weeklyWork.startDate, userEmail=session['userEmail']).first()
+    # # 관리자 탭에서는 어떤 유저인지 넘어와야 함.
+    # else:
+    #     refreshedWeeklyWork = WeeklyWork.objects(
+    #         startDate=weeklyWork.startDate, userEmail=weeklyWork['userEmail']).first()
+
+    # if(refreshedWeeklyWork == None):
+    #     return jsonify({'result': "empty"})
+
+    # return make_response(jsonify(refreshedWeeklyWork), 201)

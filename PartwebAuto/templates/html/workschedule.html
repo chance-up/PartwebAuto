@@ -96,53 +96,53 @@
             initScheduleDatePicker();
     });
 
-    function saveWorkSchedule() {
-        var value = $("#scheduleDatePicker").val();
-        let mon = {
-            date: moment(value, "YYYY-MM-DD").day(1).format("YYYY-MM-DD"),
-            schedule : $("#monWork").val()
-        };
-        let tue = {
-            date: moment(value, "YYYY-MM-DD").day(2).format("YYYY-MM-DD"),
-            schedule: $("#tueWork").val()
-        };
-        let wed = {
-            date: moment(value, "YYYY-MM-DD").day(3).format("YYYY-MM-DD"),
-            schedule: $("#wedWork").val()
-        };
-        let thu = {
-            date: moment(value, "YYYY-MM-DD").day(4).format("YYYY-MM-DD"),
-            schedule: $("#thuWork").val()
-        };
-        let fri = {
-            date: moment(value, "YYYY-MM-DD").day(5).format("YYYY-MM-DD"),
-            schedule: $("#friWork").val()
-        };
+    // function saveWorkSchedule() {
+    //     var value = $("#scheduleDatePicker").val();
+    //     let mon = {
+    //         date: moment(value, "YYYY-MM-DD").day(1).format("YYYY-MM-DD"),
+    //         schedule : $("#monWork").val()
+    //     };
+    //     let tue = {
+    //         date: moment(value, "YYYY-MM-DD").day(2).format("YYYY-MM-DD"),
+    //         schedule: $("#tueWork").val()
+    //     };
+    //     let wed = {
+    //         date: moment(value, "YYYY-MM-DD").day(3).format("YYYY-MM-DD"),
+    //         schedule: $("#wedWork").val()
+    //     };
+    //     let thu = {
+    //         date: moment(value, "YYYY-MM-DD").day(4).format("YYYY-MM-DD"),
+    //         schedule: $("#thuWork").val()
+    //     };
+    //     let fri = {
+    //         date: moment(value, "YYYY-MM-DD").day(5).format("YYYY-MM-DD"),
+    //         schedule: $("#friWork").val()
+    //     };
         
-        let serializedValues = new Array();
-        serializedValues.push(mon);
-        serializedValues.push(tue);
-        serializedValues.push(wed);
-        serializedValues.push(thu);
-        serializedValues.push(fri);
-        var jsonData = JSON.stringify(serializedValues);
+    //     let serializedValues = new Array();
+    //     serializedValues.push(mon);
+    //     serializedValues.push(tue);
+    //     serializedValues.push(wed);
+    //     serializedValues.push(thu);
+    //     serializedValues.push(fri);
+    //     var jsonData = JSON.stringify(serializedValues);
 
-        $.ajax({
-            type: 'post',
-            url: '/saveWorkSchedule',
-            data: jsonData,
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function () {
-                alert("저장 성공");
-                window.location.href = "/workSchedule"
-            },
-            error: function (request, status, error) {
-                alert("Message : " + request.responseJSON.msg);
-                window.location.href = "/"
-            }
-        });
-    }
+    //     $.ajax({
+    //         type: 'post',
+    //         url: '/saveWorkSchedule',
+    //         data: jsonData,
+    //         dataType: 'json',
+    //         contentType: 'application/json',
+    //         success: function () {
+    //             alert("저장 성공");
+    //             window.location.href = "/workSchedule"
+    //         },
+    //         error: function (request, status, error) {
+    //             alert("Message : " + request.responseJSON.msg);
+    //             window.location.href = "/"
+    //         }
+    //     });
+    // }
 
 
 </script>

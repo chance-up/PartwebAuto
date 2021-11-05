@@ -10,6 +10,7 @@ workSchedulebp = Blueprint('workSchedule', __name__, url_prefix='/')
 
 @workSchedulebp.route('/workSchedule', methods=['GET'])
 @decorator.login_required
+@decorator.admin_required(1)
 def workSchedule():
     if request.method == 'GET':
         return render_template('html/workSchedule.html')

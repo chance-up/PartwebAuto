@@ -20,8 +20,9 @@ class WeeklyWork(db.Document):
 
 class WorkSchedule(db.Document):
     userEmail = db.StringField(max_length=64, required=True)
-    date = db.DateTimeField(required=True)
-    schedule = db.IntField(required=True)
+    startDate = db.DateTimeField(required=True)
+    endDate = db.DateTimeField(required=True)
+    schedule = db.ListField(db.StringField(), required=True)
     createdAt = db.DateTimeField(required=True, default=datetime.datetime.now)
 
 

@@ -30,7 +30,7 @@ function weekNumByMonth(dateFormat) {
 }
 
 
-function refreshWeeklyWork(week,thisWeekTextArea,nextWeekTextArea, DatePicker) {
+function refreshWeeklyWork(week,thisWeekTextArea,nextWeekTextArea, DatePicker, userEmail) {
     $(thisWeekTextArea).val("");
     $(nextWeekTextArea).val("");
     let date, text;
@@ -42,6 +42,7 @@ function refreshWeeklyWork(week,thisWeekTextArea,nextWeekTextArea, DatePicker) {
     }
 
     let weeklyWorkObject = new Object();
+    weeklyWorkObject.userEmail = userEmail;
     weeklyWorkObject.startDate = date.startDate;
     weeklyWorkObject.endDate = date.endDate;
     let jsonData = JSON.stringify(weeklyWorkObject)
@@ -124,8 +125,8 @@ function initDatePicker() {
     $("#thisWeekTextAreaLabel").text("이번 주 실적(" + thisMonday.format("YYYY-MM-DD") + " ~ " + thisFriday.format("YYYY-MM-DD")+")");
     $("#nextWeekTextAreaLabel").text("다음 주 계획(" + nextMonday.format("YYYY-MM-DD") + " ~ " + nextFriday.format("YYYY-MM-DD") + ")");
     
-    refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker");
-    refreshWeeklyWork('nextWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker");
+    refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker","");
+    refreshWeeklyWork('nextWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker","");
 
     //Get the value of Start and End of Week
     $('#weeklyDatePicker').on('dp.change', function (e) {
@@ -142,8 +143,8 @@ function initDatePicker() {
         $("#thisWeekTextAreaLabel").text("이번 주 실적(" + firstDate + "~" + lastDate+")");
         $("#nextWeekTextAreaLabel").text("다음 주 계획(" + nextWeekFirstDate + "~" + nextWeekLastDate + ")");
         
-        refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker");
-        refreshWeeklyWork('nextWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker");
+        refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker","");
+        refreshWeeklyWork('nextWeek',"#thisWeekTextArea","#nextWeekTextArea","#weeklyDatePicker","");
     });
 }
 
@@ -182,74 +183,93 @@ function saveWeeklyWork(week) {
 }
 
 
-function refreshWorkSchedule(DatePicker,flag) {
+function saveWorkSchedule() {
+    let date;
+    date = getThisWeek("#scheduleDatePicker");
+    let scheduleObject = new Object();
+    scheduleObject.startDate = date.startDate;
+    scheduleObject.endDate = date.endDate;
+    scheduleObject.schedule = [$("#monWork").val(),$("#tueWork").val(), $("#wedWork").val(), $("#thuWork").val(), $("#friWork").val()];
+    let jsonData = JSON.stringify(scheduleObject)
+
+    $.ajax({
+        type: 'post',
+        url: '/saveWorkSchedule',
+        data: jsonData,
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function () {
+            alert("저장 성공");
+            window.location.href = "/workSchedule"
+        },
+        error: function (request, status, error) {
+            alert("Message : " + request.responseJSON.msg);
+            window.location.href = "/"
+        }
+    });
+}
+
+function refreshWorkSchedule(DatePicker, flag) {
+    let forAdminSchedune = {
+        0: "사무실",
+        1: "재택",
+        2: "휴무",
+    }
     let date = getThisWeek(DatePicker);
     let workScheduleObject = new Object();
     workScheduleObject.startDate = date.startDate;
     workScheduleObject.endDate = date.endDate;
     let jsonData = JSON.stringify(workScheduleObject)
 
-    let forAdminSchedune = {
-        0: "사무실",
-        1: "재택",
-        2: "휴무",
-    }
-    // workSchedule.html에서 호출한 경우
-    if (flag === 0) {
-        $.ajax({
-            type: 'post',
-            url: '/refreshWorkSchedule',
-            data: jsonData,
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function (response) {
-                $("#monWork").val(response[0].schedule)
-                $("#tueWork").val(response[1].schedule)
-                $("#wedWork").val(response[2].schedule)
-                $("#thuWork").val(response[3].schedule)
-                $("#friWork").val(response[4].schedule)
-            },
-            error: function (request, status, error) {
-                if (request.responseJSON.result == 'fail') {
-                    $("#monWork").val(0)
-                    $("#tueWork").val(0)
-                    $("#wedWork").val(0)
-                    $("#thuWork").val(0)
-                    $("#friWork").val(0)
-                }
+    let schedules;
+    $.ajax({
+        type: 'post',
+        url: '/refreshWorkSchedule',
+        data: jsonData,
+        dataType: 'json',
+        contentType: 'application/json',
+        async:false,
+        success: function (response) {
+            schedules = response.schedule;
+        },
+        error: function (request, status, error) {
+            if (request.responseJSON.result == 'empty') {
+                schedules = 0;
             }
-        });
+        }
+    });
+    
+    if (flag == 0) {
+        if (schedules != 0) {
+            $("#monWork").val(schedules[0])
+            $("#tueWork").val(schedules[1])
+            $("#wedWork").val(schedules[2])
+            $("#thuWork").val(schedules[3])
+            $("#friWork").val(schedules[4])
+        } else {
+            $("#monWork").val(0)
+            $("#tueWork").val(0)
+            $("#wedWork").val(0)
+            $("#thuWork").val(0)
+            $("#friWork").val(0)
+        }
     }
     // admin.html에서 호출한 경우
     else {
-        $.ajax({
-            type: 'post',
-            url: '/refreshWorkSchedule',
-            data: jsonData,
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function (response) {
-                $(".modal-body #mon").text(forAdminSchedune[response[0].schedule])
-                $(".modal-body #tue").text(forAdminSchedune[response[1].schedule])
-                $(".modal-body #wed").text(forAdminSchedune[response[2].schedule])
-                $(".modal-body #thu").text(forAdminSchedune[response[3].schedule])
-                $(".modal-body #fri").text(forAdminSchedune[response[4].schedule])
-                console.log(response[0].schedule)
-                console.log(forAdminSchedune[0])
-                console.log(forAdminSchedune[response[0].schedule])
-            },
-            error: function (request, status, error) {
-                if (request.responseJSON.result == 'fail') {
-                    $(".modal-body #mon").text("no schedule");
-                    $(".modal-body #tue").text("no schedule");
-                    $(".modal-body #wed").text("no schedule");
-                    $(".modal-body #thu").text("no schedule");
-                    $(".modal-body #fri").text("no schedule");
-                }
-            }
-        });
+        if (schedules != 0) {
+            $(".modal-body #mon").text(forAdminSchedune[schedules[0]]);
+            $(".modal-body #tue").text(forAdminSchedune[schedules[1]]);
+            $(".modal-body #wed").text(forAdminSchedune[schedules[2]]);
+            $(".modal-body #thu").text(forAdminSchedune[schedules[3]]);
+            $(".modal-body #fri").text(forAdminSchedune[schedules[4]]);
+        } else {
+            $(".modal-body #mon").text("사무실");
+            $(".modal-body #tue").text("사무실");
+            $(".modal-body #wed").text("사무실");
+            $(".modal-body #thu").text("사무실");
+            $(".modal-body #fri").text("사무실");
+        }
     }
-    
 }
 
 
@@ -386,6 +406,7 @@ function initDevice() {
 }
 
 // admin.html
+
 function initAdmin() {
     $('#table_admin').DataTable({
         ordering: false,
@@ -393,7 +414,7 @@ function initAdmin() {
         autoWidth: false,
     });
 }
-// admin.html
+
 function initAdminDeviceTable() {
     $('#tableAdminDevice').DataTable({
         ordering: false,
@@ -407,7 +428,7 @@ function destroyAdminDeviceTable() {
     $('#tableAdminDevice').DataTable().destroy();
 }
 
-function initAdminDatePicker() {
+function initAdminDatePicker(userEmail) {
     moment.locale('en', {
         week: { dow: 1 } 
     });
@@ -435,8 +456,9 @@ function initAdminDatePicker() {
     let thisFriday = moment().day(5);
     $("#adminDatePicker").val(thisMonday.format("YYYY-MM-DD") + " ~ " + thisFriday.format("YYYY-MM-DD"));
 
-    refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#adminDatePicker");
-    refreshWeeklyWork('nextWeek',"#thisWeekTextArea","#nextWeekTextArea","#adminDatePicker");
+
+    refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#adminDatePicker",userEmail);
+    refreshWeeklyWork('nextWeek',"#thisWeekTextArea","#nextWeekTextArea","#adminDatePicker",userEmail);
     refreshWorkSchedule("#adminDatePicker",1);
     //Get the value of Start and End of Week
     $('#adminDatePicker').on('dp.change', function (e) {
@@ -445,8 +467,31 @@ function initAdminDatePicker() {
         var lastDate = moment(value, "YYYY-MM-DD").day(5).format("YYYY-MM-DD");
         $("#adminDatePicker").val(firstDate + " ~ " + lastDate);
 
-        refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#adminDatePicker");
-        refreshWeeklyWork('nextWeek', "#thisWeekTextArea", "#nextWeekTextArea", "#adminDatePicker");
+        refreshWeeklyWork('thisWeek',"#thisWeekTextArea","#nextWeekTextArea","#adminDatePicker",userEmail);
+        refreshWeeklyWork('nextWeek', "#thisWeekTextArea", "#nextWeekTextArea", "#adminDatePicker",userEmail);
         refreshWorkSchedule("#adminDatePicker",1);
+    });
+}
+
+
+function setPermission(userEmail, userName, isAdmin) {
+    let userObject = new Object();
+    userObject.userEmail = userEmail;
+    userObject.userName = userName;
+    userObject.isAdmin = isAdmin;
+    let jsonData = JSON.stringify(userObject)
+
+    $.ajax({
+        type: 'post',
+        url: '/setPermission',
+        data: jsonData,
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function () {
+            alert("권한 변경 성공!");
+        },
+        error: function (request, status, error) {
+            alert("Message : " + request.responseJSON.msg);
+        }
     });
 }

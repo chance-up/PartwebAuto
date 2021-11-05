@@ -3,6 +3,13 @@
     {% include 'html/head.html' %}
     {% include 'html/nav.html' %}
     <body id="page-top">
+        {%with messages = get_flashed_messages()%}
+        {%if messages %}
+        <script type="text/javascript">
+            alert("{{messages[-1]}}");
+        </script>
+        {%endif%}
+        {%endwith%}
         
         
     </body>

@@ -5,7 +5,15 @@
 <body id='launcherBody'>
     {% include 'html/adminWorkModal.html' %}
     {% include 'html/adminDeviceModal.html' %}
+    {%with messages = get_flashed_messages()%}
+    {%if messages %}
+    <script type="text/javascript">
+        alert("{{messages[-1]}}");
+    </script>
+    {%endif%}
+    {%endwith%}
     <div class="container">
+        <button type="button" class="btn btn-primary">모든 사용자 주간보고</button>
         <table id="table_admin" class="table table-striped table-bordered" style="width:100%">
             <thead>
                 <tr>
@@ -25,7 +33,7 @@
                     <td><button type="button" class="btn btn-primary btn-sm" onclick='selectAdminWeeklyWork(this)'>보기</button></td>
                     <td><button type="button" class="btn btn-primary btn-sm" onclick='selectAdminUsingDevice(this)'>보기</button></td>
                     <td>
-                        <select class="selectpicker" id="permission">
+                        <select class="selectpicker" id="permission" onchange="changePermission(this)">
                             <option value="0" {% if allUsers[idx]['isAdmin']==0 %}selected="selected"{% endif %}>None</option>
                             <option value="1" {% if allUsers[idx]['isAdmin']==1 %}selected="selected"{% endif %}>User</option>
                             <option value="2" {% if allUsers[idx]['isAdmin']==2 %}selected="selected"{% endif %}>Admin</option>
@@ -42,15 +50,20 @@
         initAdmin();
     });
 
-    $("#permission").change(function (value) {
-        var selectedD = $(this).val();
-        console.log(selectedD);
-    });
+    function changePermission(t){
+        let isAdmin = $(t).val();
+        let userEmail = $(t).parent().prev().prev().prev().text()
+        let userName = $(t).parent().prev().prev().prev().prev().text()
+        console.log(userEmail + ", " + userName + ", " + isAdmin);
+        setPermission(userEmail, userName, isAdmin)
+    }
 
     function selectAdminWeeklyWork(t) {
         let userEmail = $(t).parent().prev().text()
         let userName = $(t).parent().prev().prev().text()
-        initAdminDatePicker();
+        console.log(userEmail)
+        console.log(userName)
+        initAdminDatePicker(userEmail);
         $('.modal-body #ModalLabelUserName').html(userName);
         $('#adminWorkModal').modal('show');
     }
@@ -59,10 +72,10 @@
         $('#workModalTBody').html("");
         let userEmail = $(t).parent().prev().prev().text()
         let userName = $(t).parent().prev().prev().prev().text()
-        initAdminDeviceTable();
         let devices = getDevices(userName);
+        console.log(devices);
         let html = "";
-        for(let i=0;i< devices.length;i++){
+        for (let i = 0; i < devices.length; i++) {
             html += "<tr>";
             html += "<td>" + devices[i].model + "</td>";
             html += "<td>" + devices[i].devMacId + "</td>";
@@ -71,6 +84,7 @@
             html += "</tr>";
         }
         $('#workModalTBody').append(html);
+        initAdminDeviceTable();
 
         $('.modal-body #ModalLabelUserName').html(userName);
         $('#adminDeviceModal').modal('show');

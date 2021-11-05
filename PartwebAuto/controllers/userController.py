@@ -85,10 +85,31 @@ def checkUser(request):
 def getAllUsers():
     allUser = User.objects()
 
-    for val in allUser:
-        print(val['userName'])
-
     if(allUser == None):
         return 0
 
     return allUser
+
+
+def getAdminLevel(userEmail):
+    dbUser = User.objects(userEmail=userEmail).first()
+    print(userEmail)
+    print(dbUser['userEmail'])
+
+    if(dbUser['isAdmin'] == 0):
+        print("not User")
+    elif(dbUser['isAdmin'] == 1):
+        print("normal User")
+    else:
+        print("admin user")
+
+    return dbUser['isAdmin']
+
+
+def setPermission(request):
+    body = request.get_json()
+    loginUser = User(**body)
+    dbUser = User.objects(userEmail=loginUser.userEmail).first()
+    dbUser.update(isAdmin=loginUser['isAdmin'])
+
+    return make_response(jsonify(dbUser), 201)

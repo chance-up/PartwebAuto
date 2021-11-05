@@ -11,15 +11,17 @@
                 <thead>
                     <tr>
                         <th style="width: 10%">Model</th>
-                        <th style="width: 30%">MAC</th>
-                        <th style="width: 30%">SAID</th>
-                        <th style="width: 30%">User</th>
+                        <th style="width: 20%">MAC</th>
+                        <th style="width: 20%">SAID</th>
+                        <th style="width: 10%">User</th>
+                        <th style="width: 40%">Note</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr>
                         <td>(+) New</td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -30,6 +32,7 @@
                         <td>{{allDevices[idx]['devMacId']}}</td>
                         <td>{{allDevices[idx]['said']}}</td>
                         <td>{{allDevices[idx]['userName']}}</td>
+                        <td>{{allDevices[idx]['msg']}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

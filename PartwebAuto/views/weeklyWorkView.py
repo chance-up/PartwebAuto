@@ -11,15 +11,17 @@ weeklyWorkbp = Blueprint('weeklyWork', __name__, url_prefix='/')
 
 @weeklyWorkbp.route('/weeklyWork', methods=['GET'])
 @decorator.login_required
+@decorator.admin_required(1)
 def weeklyWork():
     return render_template('html/weeklyWork.html')
 
 
 @weeklyWorkbp.route('/refreshWeeklyWork', methods=['POST'])
+@decorator.login_required
 def refreshWeeklyWork():
-    return weeklyWorkController.refreshWeeklyWork(request), 201
+    return weeklyWorkController.refreshWeeklyWork(request)
 
 
 @weeklyWorkbp.route('/saveWeeklyWork', methods=['POST'])
 def saveWeeklyWork():
-    return weeklyWorkController.saveWeeklyWork(request), 201
+    return weeklyWorkController.saveWeeklyWork(request)

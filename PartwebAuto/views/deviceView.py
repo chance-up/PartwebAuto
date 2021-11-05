@@ -3,11 +3,14 @@ from flask import Blueprint, request, render_template, jsonify
 import sys
 import os
 from PartwebAuto.controllers import deviceController
+from PartwebAuto.decorators import decorator
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 devicebp = Blueprint('device', __name__, url_prefix='/')
 
 
 @devicebp.route('/device', methods=['GET'])
+@decorator.login_required
+@decorator.admin_required(1)
 def device():
     if request.method == 'GET':
         return render_template('html/device.html', allDevices=deviceController.getAllDevices())

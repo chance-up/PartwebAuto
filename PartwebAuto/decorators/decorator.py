@@ -1,5 +1,6 @@
 from functools import wraps
 from flask import redirect, session, flash
+from PartwebAuto.controllers import userController
 
 
 def login_required(f):
@@ -12,6 +13,19 @@ def login_required(f):
 
     return decorated
 
-# def admin_required(f):
-#     @wraps(f)
-#     def decorated
+
+def admin_required(param):
+    def wrapper(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            adminLevel = userController.getAdminLevel(session['userEmail'])
+            print("adminLevel : "+str(adminLevel))
+            print("param : "+str(param))
+
+            if adminLevel < param:
+                flash("권한이 없습니다. 관리자에게 문의하세요.")
+                return redirect('/first')
+
+            return f(*args, **kwargs)
+        return decorated
+    return wrapper
