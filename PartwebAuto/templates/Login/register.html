@@ -70,7 +70,16 @@
         if ($("#password").val() !== $("#confirmPassword").val()) {
             alert("Message : 비밀번호가 일치하지 않습니다.");
             window.location.href = "/register"
+            return;
         }
+
+        if ($("#userName").val() === "" || $("#userEmail").val() === "" || $("#password").val() === ""){
+            alert("Message : 정보를 모두 입력하세요.");
+            window.location.href = "/register"
+            return;
+        }
+
+
         var userObject = new Object();
         userObject.userName = $("#userName").val()
         userObject.userEmail = $("#userEmail").val()

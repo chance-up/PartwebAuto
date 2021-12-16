@@ -14,7 +14,6 @@ jQuery.fn.serializeObject = function() {
     return obj; 
 }
 
-
 function weekNumByMonth(dateFormat) {
     const inputDate = new Date(dateFormat);
     var firstDaynameToNumofMonth = moment(inputDate).date(1).day()
@@ -33,7 +32,7 @@ function weekNumByMonth(dateFormat) {
 function refreshWeeklyWork(week,thisWeekTextArea,nextWeekTextArea, DatePicker, userEmail) {
     $(thisWeekTextArea).val("");
     $(nextWeekTextArea).val("");
-    let date, text;
+    let date;
     if (week === "thisWeek") {
         date = getThisWeek(DatePicker);
     }
@@ -49,7 +48,7 @@ function refreshWeeklyWork(week,thisWeekTextArea,nextWeekTextArea, DatePicker, u
 
     $.ajax({
         type: 'post',
-        url: '/refreshWeeklyWork',
+        url: '/weeklyWork',
         data: jsonData,
         dataType: 'json',
         contentType: 'application/json',
@@ -68,7 +67,6 @@ function refreshWeeklyWork(week,thisWeekTextArea,nextWeekTextArea, DatePicker, u
         },
         error: function (request, status, error) {
             alert("Message : " + request.responseText);
-            window.location.href = "/weeklyWork"
         }
     });
 }
@@ -168,8 +166,8 @@ function saveWeeklyWork(week) {
     let jsonData = JSON.stringify(weeklyWorkObject)
 
     $.ajax({
-        type: 'post',
-        url: '/saveWeeklyWork',
+        type: 'put',
+        url: '/weeklyWork',
         data: jsonData,
         dataType: 'json',
         contentType: 'application/json',
@@ -193,8 +191,8 @@ function saveWorkSchedule() {
     let jsonData = JSON.stringify(scheduleObject)
 
     $.ajax({
-        type: 'post',
-        url: '/saveWorkSchedule',
+        type: 'put',
+        url: '/workSchedule',
         data: jsonData,
         dataType: 'json',
         contentType: 'application/json',
@@ -224,12 +222,16 @@ function refreshWorkSchedule(DatePicker, flag) {
     let schedules;
     $.ajax({
         type: 'post',
-        url: '/refreshWorkSchedule',
+        url: '/workSchedule',
         data: jsonData,
         dataType: 'json',
         contentType: 'application/json',
         async:false,
         success: function (response) {
+            if (response.result == 'empty') {
+                schedules = [0,0,0,0,0];
+                return;
+            }
             schedules = response.schedule;
         },
         error: function (request, status, error) {
@@ -406,7 +408,6 @@ function initDevice() {
 }
 
 // admin.html
-
 function initAdmin() {
     $('#table_admin').DataTable({
         ordering: false,
@@ -424,6 +425,72 @@ function initAdminDeviceTable() {
     });
 }
 
+function initAdminAllWeeklyWorkTable() {
+    let date = $("#adminDatePickerAll").val();
+    
+    $('#WeeklyWorktableAdmin').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+				extend: 'excelHtml5'
+				,text: '엑셀출력'
+				,filename: '엑셀파일명'
+                , title: date,
+                exportOptions: {
+                    format: {
+                        body: function(data, column, row) {
+                            if (typeof data === 'string' || data instanceof String) {
+                                data = data.replace(/<br\s*\/?>/ig, "\r\n");
+                            }
+                            return data;
+                        }
+                    }
+                }
+                
+			},
+        ],
+        searching: false,
+        ordering: false,
+        paging: false,
+        autoWidth: false,
+        info: false,
+    });
+}
+
+function initAdminWorkScheduleTable() {
+    let date = $("#adminDatePickerAllSchedule").val();
+    
+    $('#WorkScheduleTableAdmin').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+				extend: 'excelHtml5'
+				,text: '엑셀출력'
+				,filename: '엑셀파일명'
+                , title: date,
+                exportOptions: {
+                    format: {
+                        body: function(data, column, row) {
+                            if (typeof data === 'string' || data instanceof String) {
+                                data = data.replace(/<br\s*\/?>/ig, "\r\n");
+                            }
+                            return data;
+                        }
+                    }
+                }
+                
+			},
+        ],
+        searching: false,
+        ordering: false,
+        paging: false,
+        autoWidth: false,
+        info: false,
+    });
+}
+
+
+
 function destroyAdminDeviceTable() {
     $('#tableAdminDevice').DataTable().destroy();
 }
@@ -432,8 +499,6 @@ function initAdminDatePicker(userEmail) {
     moment.locale('en', {
         week: { dow: 1 } 
     });
-
-    
 
     $("#adminDatePicker").datetimepicker({
         format: 'YYYY-MM-DD',
@@ -495,3 +560,244 @@ function setPermission(userEmail, userName, isAdmin) {
         }
     });
 }
+
+
+function getWeeklyWorks(startDate){
+    let weeklyWorks;
+    $.ajax({
+        type: 'get',
+        url: '/getAdminWeeklyWorks',
+        data: { startDate : startDate},
+        async: false,
+        success: function (response,status) {
+            weeklyWorks = response;
+        },
+        error: function (request, status, error) {
+            alert("Message : " + request.responseJSON.msg);
+            weeklyWorks = 0;
+        }
+    });
+
+    return weeklyWorks;
+}
+
+
+function getAdminAllUser(){
+    let allUsers;
+    $.ajax({
+        type: 'get',
+        url: '/getAdminAllUser',
+        async: false,
+        success: function (response,status) {
+            allUsers = response;
+        },
+        error: function (request, status, error) {
+            alert("Message : " + request.responseJSON.msg);
+            allUsers = 0;
+        }
+    });
+
+    return allUsers;
+}
+
+function getAllWeeklyWorks(thisMonday) {
+    $('#adminWeeklyWork').html("");
+    let tempKeyname = '';
+    let tempObject = {};
+    var mySet = new Set();
+    let allUsers = getAdminAllUser();
+    for (let i = 0; i < allUsers.length; i++){
+        mySet.add(allUsers[i]["userName"]);
+    }
+
+    // 이번 주 모든 사용자의 주간보고 내용을 가져온다.
+    let thisWeeklyWorks = getWeeklyWorks(thisMonday.format("YYYY-MM-DD"));
+    for (let i = 0; i < thisWeeklyWorks.length; i++) {
+        tempKeyname = thisWeeklyWorks[i].userName;
+        tempObject[tempKeyname + 'thisWeek'] = thisWeeklyWorks[i].text.replace(/(?:\r\n|\r|\n)/g, '<br />');
+    }
+    
+    // 다음 주 모든 사용자의 주간보고 내용을 가져온다.
+    let nextWeeklyWorks = getWeeklyWorks(thisMonday.add('days', 7).format("YYYY-MM-DD"));
+    for (let i = 0; i < nextWeeklyWorks.length; i++) {
+        tempKeyname = nextWeeklyWorks[i].userName;
+        tempObject[tempKeyname + 'nextWeek'] = nextWeeklyWorks[i].text.replace(/(?:\r\n|\r|\n)/g, '<br />');
+    }
+
+    let html = "";
+    mySet.forEach((v) => {
+        html += "<tr>";
+        html += "<td>" + v + "</td>";
+        html += (tempObject[v + 'thisWeek'] !== undefined ? "<td>" + tempObject[v + 'thisWeek'] + "</td>" : "<td style='color:red;'>미작성</td>")
+        html += (tempObject[v + 'nextWeek'] !== undefined ?  "<td>" + tempObject[v + 'nextWeek']+ "</td>": "<td style='color:red;'>미작성</td>")
+        html += "</tr>";
+    });
+    $('#adminWeeklyWork').append(html);
+    return;
+}
+
+
+
+function initAdminDatePickerAll() {
+    moment.locale('en', {
+        week: { dow: 1 } 
+    });
+
+    $("#adminDatePickerAll").datetimepicker({
+        format: 'YYYY-MM-DD',
+        dayViewHeaderFormat:'YYYY-MM',
+        daysOfWeekDisabled:[0,6],
+        toolbarPlacement: 'top',
+        icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-arrow-up",
+            down: "fa fa-arrow-down",
+            previous: "fa fa-chevron-left",
+            next: "fa fa-chevron-right",
+            today: "fa fa-clock-o",
+            clear: "fa fa-trash-o"
+        },
+
+    });
+
+    let thisMonday = moment().day(1);
+    let thisFriday = moment().day(5);
+    $("#adminDatePickerAll").val(thisMonday.format("YYYY-MM-DD") + " ~ " + thisFriday.format("YYYY-MM-DD"));
+    getAllWeeklyWorks(thisMonday);
+    initAdminAllWeeklyWorkTable();
+
+    $('#adminDatePickerAll').on('dp.change', function (e) {
+        var value = $("#adminDatePickerAll").val();
+        var firstDate = moment(value, "YYYY-MM-DD").day(1).format("YYYY-MM-DD");
+        var lastDate = moment(value, "YYYY-MM-DD").day(5).format("YYYY-MM-DD");
+        $("#adminDatePickerAll").val(firstDate + " ~ " + lastDate);
+        $('#WeeklyWorktableAdmin').DataTable().destroy();
+        initAdminAllWeeklyWorkTable();
+        getAllWeeklyWorks(moment(value, "YYYY-MM-DD").day(1));
+
+    });
+}
+
+function getWorkSchedules(startDate){
+    let workSchedules;
+    $.ajax({
+        type: 'get',
+        url: '/getAdminWorkSchedules',
+        data: { startDate : startDate},
+        async: false,
+        success: function (response,status) {
+            workSchedules = response;
+        },
+        error: function (request, status, error) {
+            alert("Message : " + request.responseJSON.msg);
+            workSchedules = 0;
+        }
+    });
+
+    console.log(workSchedules);
+
+    return workSchedules;
+}
+
+
+function getAllWorkSchedule(thisMonday) {
+    $('#adminWorkSchedule').html("");
+    let tempKeyname = '';
+    let tempObject = {};
+    var mySet = new Set();
+    let allUsers = getAdminAllUser();
+    for (let i = 0; i < allUsers.length; i++){
+        mySet.add(allUsers[i]["userName"]);
+    }
+
+    // 이번 주 모든 사용자의 주간보고 내용을 가져온다.
+    let thisWorkSchedules = getWorkSchedules(thisMonday.format("YYYY-MM-DD"));
+    for (let i = 0; i < thisWorkSchedules.length; i++) {
+        tempKeyname = thisWorkSchedules[i].userName;
+        tempObject[tempKeyname + 'mon'] = thisWorkSchedules[i].schedule[0];
+        tempObject[tempKeyname + 'tue'] = thisWorkSchedules[i].schedule[1];
+        tempObject[tempKeyname + 'wed'] = thisWorkSchedules[i].schedule[2];
+        tempObject[tempKeyname + 'thu'] = thisWorkSchedules[i].schedule[3];
+        tempObject[tempKeyname + 'fri'] = thisWorkSchedules[i].schedule[4];
+        
+    }
+    let forAdminSchedule = {
+        0: "사무실",
+        1: "재택",
+        2: "휴무",
+    }
+
+    let forAdminScheduleColor = {
+        0: " class='h5 bg-primary text-white'",
+        1: " class='h5 bg-success text-white'",
+        2: " class='h5 bg-warning text-white'",
+    }
+
+    let html = "";
+    mySet.forEach((v) => {
+        html += "<tr align='center'>";
+        html += "<td>" + v + "</td>";
+        html += (tempObject[v + 'mon'] !== undefined ? ("<td" + forAdminScheduleColor[tempObject[v + 'mon']] + ">"
+            + forAdminSchedule[tempObject[v + 'mon']]) + "</td>" : "<td class='h5 bg-primary text-white'>사무실</td>")
+        html += (tempObject[v + 'tue'] !== undefined ? ("<td" + forAdminScheduleColor[tempObject[v + 'tue']] + ">"
+            + forAdminSchedule[tempObject[v + 'tue']]) + "</td>" : "<td class='h5 bg-primary text-white'>사무실</td>")
+        html += (tempObject[v + 'wed'] !== undefined ? ("<td" + forAdminScheduleColor[tempObject[v + 'wed']] + ">"
+            + forAdminSchedule[tempObject[v + 'wed']]) + "</td>" : "<td class='h5 bg-primary text-white'>사무실</td>")
+        html += (tempObject[v + 'thu'] !== undefined ? ("<td" + forAdminScheduleColor[tempObject[v + 'thu']] + ">"
+            + forAdminSchedule[tempObject[v + 'thu']]) + "</td>" : "<td class='h5 bg-primary text-white'>사무실</td>")
+        html += (tempObject[v + 'fri'] !== undefined ? ("<td" + forAdminScheduleColor[tempObject[v + 'fri']] + ">"
+            + forAdminSchedule[tempObject[v + 'fri']]) + "</td>" : "<td class='h5 bg-primary text-white'>사무실</td>")
+        html += "</tr>";
+    });
+    $('#adminWorkSchedule').append(html);
+    return;
+}
+
+
+
+
+function initAdminDatePickerAllSchedule() {
+    moment.locale('en', {
+        week: { dow: 1 } 
+    });
+
+    $("#adminDatePickerAllSchedule").datetimepicker({
+        format: 'YYYY-MM-DD',
+        dayViewHeaderFormat:'YYYY-MM',
+        daysOfWeekDisabled:[0,6],
+        toolbarPlacement: 'top',
+        icons: {
+            time: "fa fa-clock-o",
+            date: "fa fa-calendar",
+            up: "fa fa-arrow-up",
+            down: "fa fa-arrow-down",
+            previous: "fa fa-chevron-left",
+            next: "fa fa-chevron-right",
+            today: "fa fa-clock-o",
+            clear: "fa fa-trash-o"
+        },
+
+    });
+
+    let thisMonday = moment().day(1);
+    let thisFriday = moment().day(5);
+    $("#adminDatePickerAllSchedule").val(thisMonday.format("YYYY-MM-DD") + " ~ " + thisFriday.format("YYYY-MM-DD"));
+
+    console.log(thisMonday);
+    getAllWorkSchedule(thisMonday);
+    // initAdminAllWeeklyWorkTable();
+
+    $('#adminDatePickerAllSchedule').on('dp.change', function (e) {
+        var value = $("#adminDatePickerAllSchedule").val();
+        var firstDate = moment(value, "YYYY-MM-DD").day(1).format("YYYY-MM-DD");
+        var lastDate = moment(value, "YYYY-MM-DD").day(5).format("YYYY-MM-DD");
+        $("#adminDatePickerAllSchedule").val(firstDate + " ~ " + lastDate);
+        // $('#WeeklyWorktableAdmin').DataTable().destroy();
+        // initAdminAllWeeklyWorkTable();
+        getAllWorkSchedule(moment(value, "YYYY-MM-DD").day(1));
+
+    });
+}
+
+

@@ -95,6 +95,7 @@ def getAdminLevel(userEmail):
     dbUser = User.objects(userEmail=userEmail).first()
     print(userEmail)
     print(dbUser['userEmail'])
+    print(dbUser['isAdmin'])
 
     if(dbUser['isAdmin'] == 0):
         print("not User")
@@ -113,3 +114,8 @@ def setPermission(request):
     dbUser.update(isAdmin=loginUser['isAdmin'])
 
     return make_response(jsonify(dbUser), 201)
+
+
+def getUserName(userEmail):
+    dbUser = User.objects(userEmail=userEmail).first()
+    return dbUser["userName"]

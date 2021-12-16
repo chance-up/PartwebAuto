@@ -2,6 +2,7 @@ import sys
 import os
 from PartwebAuto.models.models import WeeklyWork
 from flask import jsonify, session, make_response
+from controllers import userController
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
@@ -12,6 +13,7 @@ def saveWeeklyWork(request):
     body = request.get_json()
     weeklyWork = WeeklyWork(**body)
     weeklyWork['userEmail'] = session['userEmail']
+    weeklyWork['userName'] = userController.getUserName(session['userEmail'])
 
     dbWeeklyWork = WeeklyWork.objects(
         startDate=weeklyWork.startDate, userEmail=session['userEmail']).first()
@@ -37,6 +39,23 @@ def refreshWeeklyWork(request):
             startDate=weeklyWork.startDate, userEmail=weeklyWork['userEmail']).first()
 
     if(refreshedWeeklyWork == None):
-        return jsonify({'result': "empty"})
+        return make_response(jsonify({'result': "empty"}), 201)
 
     return make_response(jsonify(refreshedWeeklyWork), 201)
+
+
+def getWeeklyWorks(request):
+    print(request.args.get('startDate'))
+    weeklyWorks = WeeklyWork.objects(startDate=request.args.get('startDate'))
+    print(weeklyWorks)
+    if(weeklyWorks == None):
+        return make_response(jsonify({'result': "empty"}), 500)
+
+    for val in weeklyWorks:
+        print(val['userName'])
+        print(val['userEmail'])
+        print(val['startDate'])
+        print(val['endDate'])
+        print(val['text'])
+
+    return make_response(jsonify(weeklyWorks), 201)

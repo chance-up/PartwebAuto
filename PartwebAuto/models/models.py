@@ -11,6 +11,7 @@ class User(db.Document):
 
 
 class WeeklyWork(db.Document):
+    userName = db.StringField(max_length=64)
     userEmail = db.StringField(max_length=64, required=True)
     startDate = db.DateTimeField(required=True)
     endDate = db.DateTimeField(required=True)
@@ -19,6 +20,7 @@ class WeeklyWork(db.Document):
 
 
 class WorkSchedule(db.Document):
+    userName = db.StringField(max_length=64)
     userEmail = db.StringField(max_length=64, required=True)
     startDate = db.DateTimeField(required=True)
     endDate = db.DateTimeField(required=True)

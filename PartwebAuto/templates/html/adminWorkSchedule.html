@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'html/head.html' %}
+{% include 'html/nav.html' %}
+<body id='launcherBody'>
+    {%with messages = get_flashed_messages()%}
+    {%if messages %}
+    <script type="text/javascript">
+        alert("{{messages[-1]}}");
+    </script>
+    {%endif%}
+    {%endwith%}
+    <h1 align="center" >모든 사용자 재택 현황</h1>
+    <div class="container">
+        <div class="controls" style="position: relative">
+        <input type='text' id='adminDatePickerAllSchedule' placeholder="Select Week" />
+        </div>
+        <table id="WorkScheduleTableAdmin" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr align='center'>
+                    <th style="width: 25%;">Name</th>
+                    <th style="width: 15%;">월</th>
+                    <th style="width: 15%;">화</th>
+                    <th style="width: 15%;">수</th>
+                    <th style="width: 15%;">목</th>
+                    <th style="width: 15%;">금</th>
+
+                </tr>
+            </thead>
+        
+            <tbody id='adminWorkSchedule'>
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        initAdminDatePickerAllSchedule();
+        
+    });
+
+</script>
+
+</html>

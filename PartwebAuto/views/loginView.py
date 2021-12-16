@@ -1,5 +1,6 @@
 
 from flask import Blueprint, request, render_template
+from flask.views import MethodView
 import sys
 import os
 from PartwebAuto.controllers import userController
@@ -9,6 +10,7 @@ loginbp = Blueprint('login', __name__, url_prefix='/')
 
 
 @loginbp.route('/', methods=['GET'])
+@loginbp.route('/login/', methods=['GET'])
 def index():
     return render_template('Login/login.html')
 

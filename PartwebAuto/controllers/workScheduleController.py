@@ -2,6 +2,7 @@ import sys
 import os
 from PartwebAuto.models.models import WorkSchedule
 from flask import jsonify, session, make_response
+from controllers import userController
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 # 재택일정 저장
@@ -11,6 +12,7 @@ def saveWorkSchedule(request):
     body = request.get_json()
     workSchedule = WorkSchedule(**body)
     workSchedule['userEmail'] = session['userEmail']
+    workSchedule['userName'] = userController.getUserName(session['userEmail'])
 
     dbWorkSchedule = WorkSchedule.objects(
         startDate=workSchedule.startDate, userEmail=session['userEmail']).first()
@@ -20,8 +22,6 @@ def saveWorkSchedule(request):
     else:
         return make_response(jsonify(dbWorkSchedule.update(**body)), 201)
 
-  
-
 
 def refreshWorkSchedule(request):
     body = request.get_json()
@@ -30,30 +30,25 @@ def refreshWorkSchedule(request):
     dbWorkSchedule = WorkSchedule.objects(
         startDate=workSchedule.startDate, userEmail=session['userEmail']).first()
 
-    print(dbWorkSchedule)
-
     if(dbWorkSchedule == None):
-        return make_response(jsonify({'result': 'empty'}), 500)
+        return make_response(jsonify({'result': 'empty'}), 201)
 
     return make_response(jsonify(dbWorkSchedule), 201)
-    # selectedSchedule = request.get_json()
 
-    # dbWorkSchedule = WorkSchedule.objects(userEmail=session['userEmail'], ).filter(
-    #     date__gte=selectedSchedule['startDate'], date__lte=selectedSchedule['endDate'])
 
-    # if(workSchedules.count() != 5):
-    #     return make_response({'result': "fail", 'msg': "There is no schedule!"}, 500)
+def getWorkSchedules(request):
+    print(request.args.get('startDate'))
+    workSchedules = WorkSchedule.objects(
+        startDate=request.args.get('startDate'))
+    print(workSchedules)
+    if(workSchedules == None):
+        return make_response(jsonify({'result': "empty"}), 500)
 
-    # # 개인 주간보고 탭에서는 session에 userEmail이 저장되어 있으므로 값이 넘어오지 않음
-    # if weeklyWork['userEmail'] == "":
-    #     refreshedWeeklyWork = WeeklyWork.objects(
-    #         startDate=weeklyWork.startDate, userEmail=session['userEmail']).first()
-    # # 관리자 탭에서는 어떤 유저인지 넘어와야 함.
-    # else:
-    #     refreshedWeeklyWork = WeeklyWork.objects(
-    #         startDate=weeklyWork.startDate, userEmail=weeklyWork['userEmail']).first()
+    # for val in workSchedules:
+    #     print(val['userName'])
+    #     print(val['userEmail'])
+    #     print(val['startDate'])
+    #     print(val['endDate'])
+    #     print(val['text'])
 
-    # if(refreshedWeeklyWork == None):
-    #     return jsonify({'result': "empty"})
-
-    # return make_response(jsonify(refreshedWeeklyWork), 201)
+    return make_response(jsonify(workSchedules), 201)

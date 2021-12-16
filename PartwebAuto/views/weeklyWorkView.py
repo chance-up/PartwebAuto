@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template, jsonify, session
 import sys
 import os
+from flask.views import MethodView
 from PartwebAuto.decorators import decorator
 from PartwebAuto.controllers import weeklyWorkController
 
@@ -9,19 +10,42 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 weeklyWorkbp = Blueprint('weeklyWork', __name__, url_prefix='/')
 
 
-@weeklyWorkbp.route('/weeklyWork', methods=['GET'])
-@decorator.login_required
-@decorator.admin_required(1)
-def weeklyWork():
-    return render_template('html/weeklyWork.html')
+class WeeklyWorkView(MethodView):
+    decorators = [
+        decorator.login_required,
+        decorator.admin_required(1)
+    ]
+
+    def get(self):
+        return render_template('html/weeklyWork.html')
+
+    def post(self):
+        return weeklyWorkController.refreshWeeklyWork(request)
+
+    def put(self):
+        return weeklyWorkController.saveWeeklyWork(request)
 
 
-@weeklyWorkbp.route('/refreshWeeklyWork', methods=['POST'])
-@decorator.login_required
-def refreshWeeklyWork():
-    return weeklyWorkController.refreshWeeklyWork(request)
+weeklyWorkbp.add_url_rule(
+    '/weeklyWork', view_func=WeeklyWorkView.as_view("WeeklyWorkView"))
 
 
-@weeklyWorkbp.route('/saveWeeklyWork', methods=['POST'])
-def saveWeeklyWork():
-    return weeklyWorkController.saveWeeklyWork(request)
+# class WeeklyWorksView(MethodView):
+#     decorators = [
+#         decorator.login_required,
+#         decorator.admin_required(1)
+#     ]
+
+#     def get(self):
+#         return weeklyWorkController.getWeeklyWorks(request)
+#         # return render_template('html/weeklyWork.html')
+
+#     # def post(self):
+#     #     return weeklyWorkController.refreshWeeklyWork(request)
+
+#     # def put(self):
+#     #     return weeklyWorkController.saveWeeklyWork(request)
+
+
+# weeklyWorkbp.add_url_rule(
+#     '/weeklyWorks', view_func=WeeklyWorksView.as_view("WeeklyWorksView"))

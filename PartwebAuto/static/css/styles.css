@@ -11926,3 +11926,14 @@ html {
 #logoutButton {
   font-size: 0.6rem;
 }
+#adminDatePickerAll {
+  font-size: 1rem;
+  width: 13rem;
+}
+
+#adminDatePickerAllSchedule {
+  font-size: 1rem;
+  width: 13rem;
+}
+
+

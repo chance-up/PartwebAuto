@@ -13,7 +13,8 @@
     {%endif%}
     {%endwith%}
     <div class="container">
-        <button type="button" class="btn btn-primary">모든 사용자 주간보고</button>
+        <button type="button" class="btn btn-primary" onClick="location.href='/adminWeeklyWork'">모든 사용자 주간보고</button>
+        <button type="button" class="btn btn-primary" onClick="location.href='/adminWorkSchedule'" >모든 사용자 재택현황</button>
         <table id="table_admin" class="table table-striped table-bordered" style="width:100%">
             <thead>
                 <tr>
@@ -93,6 +94,12 @@
     $('#adminDeviceModal').on('hidden.bs.modal', function (e) {
         destroyAdminDeviceTable();
     })
+
+
+    // function selectAdminAllWeeklyWork(t) {
+    //     initAdminDatePickerAll();
+    //     $('#adminAllWorkModal').modal('show');
+    // }
 
 </script>
 
