@@ -56,18 +56,18 @@ def deleteDevice(request):
     return make_response(jsonify(deleteDevice.delete()), 201)
 
 
-def dmUpdateDevice(request):
-    body = request.get_json()
-    device = Device(**body)
+# def dmUpdateDevice(request):
+#     body = request.get_json()
+#     device = Device(**body)
 
-    print(device.userName)
-    print(device.devMacId)
-    print(device.model)
+#     print(device.userName)
+#     print(device.devMacId)
+#     print(device.model)
 
-    # 있으면 update, 없으면 Insert
-    existDevice = Device.objects(devMacId=device['devMacId']).first()
+#     # 있으면 update, 없으면 Insert
+#     existDevice = Device.objects(devMacId=device['devMacId']).first()
 
-    if(existDevice == None):
-        return make_response(jsonify(device.save()), 201)
-    else:
-        return make_response(jsonify(existDevice.update(**body)), 201)
+#     if(existDevice == None):
+#         return make_response(jsonify(device.save()), 201)
+#     else:
+#         return make_response(jsonify(existDevice.update(**body)), 201)
