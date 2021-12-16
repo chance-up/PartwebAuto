@@ -21,10 +21,11 @@ def create_app():
     def setting_database():
         # 추후 개발환경 따라 나눌 예정
         app.config['MONGODB_SETTINGS'] = {
-            'db': 'testmongo',
-            'host': 'localhost',
-            'port': 27017
+            'db': os.environ.get("MONGO_COLLECTION_NAME"),
+            'host':  os.environ.get("MONGO_HOST"),
+            'port':  int(os.environ.get("MONGO_PORT"))
         }
+        #app.config['MONGODB_SETTINGS'] = os.environ.get("MONGODB_SETTINGS")
         db.init_app(app)
 
     app = Flask(__name__)
