@@ -35,6 +35,23 @@ def insertDevice():
 def deleteDevice():
     return deviceController.deleteDevice(request)
 
+# DeviceManager App과 연동되는 API
+
+
+@devicebp.route('/dmInsertDevice', methods=['POST'])
+def dmInsertDevice():
+    return deviceController.dmInsertDevice(request)
+
+
+@devicebp.route('/dmUpdateDevice', methods=['POST'])
+def dmUpdateDevice():
+    return deviceController.dmUpdateDevice(request)
+
+
+@devicebp.route('/dmDeleteDevice', methods=['POST'])
+def dmDeleteDevice():
+    return deviceController.dmDeleteDevice(request)
+
 
 # @devicebp.route('/device', methods=['GET', 'PUT', 'POSt', 'DELETE'])
 # def device():
