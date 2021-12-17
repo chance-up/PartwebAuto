@@ -109,3 +109,27 @@
 ## 7. MongoDB 연동
 
 - **init**.py의 setting_database 참고
+
+# Linux(ubuntu)환경에서 서버 실행 방법
+
+## 0. 준비사항
+
+- Python 설치
+- venv 가상환경 구축
+- 필요 패키지 설치
+  > pip(or pip3) install -r requirements.txt
+
+## 1. EC2접속(Putty)
+
+- Domain 입력(port : 22(ssh))
+- Connection -> SSH -> Auth -> .ppk파일 불러오기
+- Open
+- login
+
+## 2. flask 서버 실행
+
+- 최초 서버 접속 후
+  > cd myapp
+  > source venv/bin/activate
+  > cd PartwebAuto
+  > flask run
