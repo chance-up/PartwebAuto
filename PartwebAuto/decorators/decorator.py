@@ -18,6 +18,11 @@ def admin_required(param):
     def wrapper(f):
         @wraps(f)
         def decorated(*args, **kwargs):
+
+            if "userEmail" not in session:
+                flash("로그인이  필요한  서비스  입니다.")
+                return redirect('/')
+
             adminLevel = userController.getAdminLevel(session['userEmail'])
             print("adminLevel : "+str(adminLevel))
             print("param : "+str(param))

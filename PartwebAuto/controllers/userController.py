@@ -92,10 +92,8 @@ def getAllUsers():
 
 
 def getAdminLevel(userEmail):
+
     dbUser = User.objects(userEmail=userEmail).first()
-    print(userEmail)
-    print(dbUser['userEmail'])
-    print(dbUser['isAdmin'])
 
     if(dbUser['isAdmin'] == 0):
         print("not User")

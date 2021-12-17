@@ -110,7 +110,7 @@
 
 - **init**.py의 setting_database 참고
 
-# Linux(ubuntu)환경에서 서버 실행 방법
+# Linux(ubuntu)환경에서 Flask서버 실행 방법
 
 ## 0. 준비사항
 
@@ -136,3 +136,20 @@
   > cd PartwebAuto
   >
   > flask run
+
+# Linux(ubuntu)환경에서 MongoDB서버 실행 방법
+
+- Python 설치
+- Mongodb설치
+
+## 1. EC2접속(Putty)
+
+- Domain 입력(port : 22(ssh))
+- Connection -> SSH -> Auth -> .ppk파일 불러오기
+- Open
+- login
+
+## 2. MongoDB 서버 실행
+
+- 최초 서버 접속 후
+  > sudo service mongodb start(or restart)
