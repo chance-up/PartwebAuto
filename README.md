@@ -130,6 +130,9 @@
 
 - 최초 서버 접속 후
   > cd myapp
+  >
   > source venv/bin/activate
+  >
   > cd PartwebAuto
+  >
   > flask run
