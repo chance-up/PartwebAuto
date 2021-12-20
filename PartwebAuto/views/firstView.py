@@ -4,10 +4,10 @@ import os
 from PartwebAuto.decorators import decorator
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
-firstbp = Blueprint('first', __name__, url_prefix='/')
+firstbp = Blueprint('first', __name__, url_prefix='/first')
 
 
-@firstbp.route('/first', methods=['GET'])
+@firstbp.route('/', methods=['GET'])
 @decorator.login_required
 def first():
     if request.method == 'GET':

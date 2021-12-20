@@ -5,10 +5,10 @@ import os
 from PartwebAuto.controllers import deviceController
 from PartwebAuto.decorators import decorator
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-devicebp = Blueprint('device', __name__, url_prefix='/')
+devicebp = Blueprint('device', __name__, url_prefix='/device')
 
 
-@devicebp.route('/device', methods=['GET'])
+@devicebp.route('/', methods=['GET'])
 @decorator.login_required
 @decorator.admin_required(1)
 def device():
@@ -38,14 +38,14 @@ def deleteDevice():
 # DeviceManager App과 연동되는 API
 
 
-@devicebp.route('/dmUpdateDevice', methods=['POST'])
-def dmUpdateDevice():
-    return deviceController.insertDevice(request)
+# @devicebp.route('/dmUpdateDevice', methods=['POST'])
+# def dmUpdateDevice():
+#     return deviceController.insertDevice(request)
 
 
-@devicebp.route('/dmDeleteDevice', methods=['POST'])
-def dmDeleteDevice():
-    return deviceController.dmDeleteDevice(request)
+# @devicebp.route('/dmDeleteDevice', methods=['POST'])
+# def dmDeleteDevice():
+#     return deviceController.dmDeleteDevice(request)
 
 
 # @devicebp.route('/device', methods=['GET', 'PUT', 'POSt', 'DELETE'])

@@ -346,7 +346,7 @@ function getDevice(mac){
     let device;
     $.ajax({
         type: 'get',
-        url: '/getDevice',
+        url: '/device/getDevice',
         data: { devMacId : mac},
         async: false,
         success: function (response,status) {
@@ -366,7 +366,7 @@ function getDevices(userName){
     let devices;
     $.ajax({
         type: 'get',
-        url: '/getDevices',
+        url: '/device/getDevices',
         data: { userName : userName},
         async: false,
         success: function (response,status) {
@@ -434,7 +434,7 @@ function initAdminAllWeeklyWorkTable() {
             {
 				extend: 'excelHtml5'
 				,text: '엑셀출력'
-				,filename: '엑셀파일명'
+				,filename: '주간보고'
                 , title: date,
                 exportOptions: {
                     format: {
@@ -466,7 +466,7 @@ function initAdminWorkScheduleTable() {
             {
 				extend: 'excelHtml5'
 				,text: '엑셀출력'
-				,filename: '엑셀파일명'
+				,filename: '재택계획'
                 , title: date,
                 exportOptions: {
                     format: {
@@ -548,7 +548,7 @@ function setPermission(userEmail, userName, isAdmin) {
 
     $.ajax({
         type: 'post',
-        url: '/setPermission',
+        url: '/admin/setPermission',
         data: jsonData,
         dataType: 'json',
         contentType: 'application/json',
@@ -566,7 +566,7 @@ function getWeeklyWorks(startDate){
     let weeklyWorks;
     $.ajax({
         type: 'get',
-        url: '/getAdminWeeklyWorks',
+        url: '/admin/getAdminWeeklyWorks',
         data: { startDate : startDate},
         async: false,
         success: function (response,status) {
@@ -586,7 +586,7 @@ function getAdminAllUser(){
     let allUsers;
     $.ajax({
         type: 'get',
-        url: '/getAdminAllUser',
+        url: '/admin/getAdminAllUser',
         async: false,
         success: function (response,status) {
             allUsers = response;
@@ -683,7 +683,7 @@ function getWorkSchedules(startDate){
     let workSchedules;
     $.ajax({
         type: 'get',
-        url: '/getAdminWorkSchedules',
+        url: '/admin/getAdminWorkSchedules',
         data: { startDate : startDate},
         async: false,
         success: function (response,status) {

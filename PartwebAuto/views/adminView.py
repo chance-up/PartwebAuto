@@ -4,10 +4,10 @@ import sys
 import os
 from PartwebAuto.decorators import decorator
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-adminbp = Blueprint('admin', __name__, url_prefix='/')
+adminbp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
-@adminbp.route('/admin', methods=['GET'])
+@adminbp.route('/', methods=['GET'])
 @decorator.login_required
 @decorator.admin_required(2)
 def admin():
